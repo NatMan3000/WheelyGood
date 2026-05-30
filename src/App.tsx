@@ -5,6 +5,7 @@ import TroubleshooterPage from './pages/TroubleshooterPage'
 import ProfilesPage from './pages/ProfilesPage'
 import SettingsPage from './pages/SettingsPage'
 import SettingDetailPage from './pages/SettingDetailPage'
+import SymptomDetailPage from './pages/SymptomDetailPage'
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
       </Route>
       {/* Deep-linkable full-screen detail (outside the shell). */}
       <Route path="/setting/:id" element={<SettingDetailPage />} />
+      <Route path="/symptom/:id" element={<SymptomDetailPage />} />
       <Route path="*" element={<Navigate to="/learn" replace />} />
     </Routes>
   )
