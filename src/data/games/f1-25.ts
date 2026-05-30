@@ -8,6 +8,9 @@ import type { Setting } from "../../types"
 // Slider ranges are approximate (community-sourced); defaults are community consensus.
 // All settings flagged `unverified: true`.
 // F1 25 is single-seater circuit racing; typical rotation ~360°.
+//
+// FFB mechanics grounded in research/f1-25-ffb-explained.md (Driver61, SimRacingSetup,
+// Brian Koponen, RacingGames.gg, Thrustmaster technical docs, EA official sources).
 
 export const f125Settings: Setting[] = [
   {
@@ -23,23 +26,23 @@ export const f125Settings: Setting[] = [
       path: "Settings → Vibration & Force Feedback → Vibration & Force Feedback",
     },
     description:
-      "Master strength control for all force feedback output. Scales every FFB effect proportionally — set this first before adjusting the sub-effects. Disabling the toggle silences all wheel forces entirely.",
+      "Master gain for all force feedback output — including the core steering weight you feel loading up through a corner. Scales every FFB effect proportionally. Disabling the toggle silences all wheel forces entirely.",
     details:
-      "This is the FFB volume knob for the entire signal chain — cornering load, kerb strikes, and surface texture all ride on top of whatever strength this is set to. Fanatec's official recommendation for the ClubSport DD is 100, paired with an on-wheel FF value of 75 (set on the wheel base itself). The on-wheel FF controls the actual motor torque output; the in-game value shapes the signal before it gets there.\n\nThe risk at very high values is clipping: when the strongest forces (heavy braking into a slow corner, for example) hit the hardware ceiling, every effect in that moment gets crushed to the same flat peak. You lose the graduation that tells you how loaded the tyres actually are. If the wheel feels uniformly stiff rather than communicating a range of forces, clipping is the likely cause — back off the in-game value or the on-wheel FF.",
+      "This is the FFB volume knob for the entire signal chain. Critically, it controls the primary steering weight — the self-aligning torque (SAT) that builds as you turn into a corner and the front tyres load up. Codemasters explicitly added SAT to the overall FFB calculation in an F1 22 patch, and it has been part of the model ever since. Everything else — kerb strikes, surface texture — rides on top of this master signal.\n\nFanatec's official recommendation for the ClubSport DD is 100 in-game paired with on-wheel FF 75. The on-wheel FF controls the actual motor torque output; the in-game value shapes the signal before it gets there.\n\nThe risk at high values is clipping: when the strongest forces hit the hardware ceiling, the signal flatlines at its peak rather than continuing to build. What this means in practice is that the hardest corners — where the wheel should feel heaviest and most informative — go paradoxically numb and flat. If the wheel stops communicating a range of load through a fast sequence and instead feels uniformly dead at the apex, clipping is the cause. Back off the in-game value or the on-wheel FF until the graduation returns.",
     valueType: { kind: "numeric", min: 0, max: 150, default: 100, unit: "%" },
     increaseEffect:
-      "Stronger forces from all effects — more physical load through the wheel on kerbs, braking, and cornering.",
+      "Stronger forces across everything — heavier steering through corners, more physical kerb and surface feedback. Too high and clipping makes the heaviest corners go numb/flat.",
     decreaseEffect:
-      "Lighter, weaker wheel forces — easier on the arms for long stints but less physical information.",
+      "Lighter, weaker wheel forces — easier on the arms for long stints but less physical information, including less cornering weight.",
     sweetSpot:
       "Fanatec DD: 100 in-game + FF 75 on-wheel (Fanatec-official). Fanatec V2.5: ~115–125 to compensate for lower peak torque. G920: ~120–140.",
     warnings: [
-      "Clipping at very high values flattens the detail out of every effect — the wheel feels uniformly stiff rather than graduated.",
+      "Clipping at high values makes heavy corners feel numb/flat rather than graduated — the wheel stops building force and just sits at a ceiling.",
       "Verify whether this appears as a combined toggle+strength control or two separate controls in F1 25.",
     ],
     interactsWith: [
-      { settingId: "f125-on-track-effects", relationship: "On Track Effects rides on top of this master strength — set master first." },
-      { settingId: "f125-wheel-damper", relationship: "Wheel Damper is additive; high master + high damper can make the wheel feel heavy and unresponsive." },
+      { settingId: "f125-on-track-effects", relationship: "On Track Effects is a texture/vibration layer that adds on top of the steering signal this controls — set master first." },
+      { settingId: "f125-wheel-damper", relationship: "Wheel Damper is additive artificial friction; high master + high damper compounds heaviness and masks the true FFB signal." },
     ],
     recommendations: [
       { game: "f1-25", setup: "xsx", value: 100, notes: "Fanatec-recommended for the ClubSport DD. Pair with on-wheel FF 75." },
@@ -61,23 +64,23 @@ export const f125Settings: Setting[] = [
       path: "Settings → Vibration & Force Feedback → On Track Effects",
     },
     description:
-      "Controls the strength of general in-lap force feedback: steering weight, tyre load, suspension movement, and the push-pull of the car through corners. The primary 'road feel' slider in F1 25.",
+      "Secondary road-surface texture and vibration layer — communicates bumps, track marbles, kerb-adjacent undulations, and general road imperfections through the wheel. This is NOT the source of cornering weight or steering load.",
     details:
-      "This is the setting that makes the wheel communicate what the car is doing through a corner — the weight building as you turn in, the lightening as downforce loads up at speed, the subtle shift in feel as the rear starts to move. On a direct-drive wheel like the ClubSport DD, Fanatec recommends a conservative 20 in-game. That sounds low, but the DD's high torque output means even a modest in-game value translates to a meaningful physical force — and at 20 there's still plenty of dynamic range before the signal clips.\n\nIf the wheel feels lifeless at 20, small increments work better than large ones here. At 50+ on a direct-drive base, heavy braking zones and high-speed corners can become physically fatiguing over a race distance.",
+      "A common misconception is that On Track Effects is the primary cornering force slider. It is not — the cornering weight you feel building through a turn (self-aligning torque) comes from the master Vibration & Force Feedback Strength setting. On Track Effects is a separate channel that overlays road-surface texture: bumps, marbles, undulations, and the micro-vibrations that occur as tyres approach saturation. Multiple independent sources confirm this — Driver61 (F1 2021) describes it explicitly as \"the FFB strength provided by bumps, undulations, and changes in road surface texture.\"\n\nSetting it to zero would not make the wheel feel weightless in corners — the steering load would remain. You'd just lose the surface buzz layered on top of it.\n\nAs a side effect, tyre saturation does produce micro-vibrations that can signal grip-limit chatter through this channel. But that's a vibration warning, not the load itself. Pro esports drivers often run this at zero — they prefer reading the car through the clean cornering force rather than through artificial texture overlay.\n\nTIP: On a direct-drive base, even 20 produces meaningful texture. Too high and the constant buzz drowns out the steering-load signal, making it harder to read the tyres rather than easier. Note that F1 25 also has separate Steering/Throttle/Brake Linearity, Deadzone, and Saturation calibration sliders under Settings → Controls → Calibration — those are input-mapping controls, not FFB.",
     valueType: { kind: "numeric", min: 0, max: 100, default: 30, unit: "%" },
     increaseEffect:
-      "Heavier wheel through corners — more tyre load and car balance communicated physically; harder to steer at the limit.",
+      "More texture and vibration through the wheel over bumps, marbles, and rough surface sections. Does not increase cornering weight or steering load.",
     decreaseEffect:
-      "Lighter wheel on track — easier to steer quickly, less tyre detail but less physical effort.",
+      "Smoother, quieter wheel over surface imperfections. Cornering weight is unaffected — the wheel still loads up through corners, you just won't feel the surface overlay.",
     sweetSpot:
-      "Fanatec DD: 20 (Fanatec-official). V2.5: 30–40. G920: 45–60. Single-seaters generate high downforce loads — start conservative and build.",
+      "Fanatec DD: 20 (Fanatec-official). V2.5: 30–40. G920: 45–60. Start conservative — too high creates noise that masks the cornering signal.",
     warnings: [
-      "Too high can cause oscillation under heavy braking or through slow chicanes.",
+      "Too high drowns out the base cornering signal with surface noise, making tyre state harder to read.",
       "Verify slider name in-game — community consensus only.",
     ],
     interactsWith: [
-      { settingId: "f125-ffb-master", relationship: "Master strength scales this — set master first, then fine-tune On Track Effects." },
-      { settingId: "f125-understeer-enhance", relationship: "Understeer Enhance modifies the feel at the tyre limit; On Track Effects is the baseline force." },
+      { settingId: "f125-ffb-master", relationship: "Master Strength controls the cornering weight; On Track Effects is a texture layer that sits alongside it — not the primary force." },
+      { settingId: "f125-understeer-enhance", relationship: "Understeer Enhance modifies the wheel-lightening signal at the grip limit; On Track Effects is a separate texture/vibration channel." },
     ],
     recommendations: [
       { game: "f1-25", setup: "xsx", value: 20, notes: "Fanatec-recommended for the ClubSport DD." },
@@ -99,9 +102,9 @@ export const f125Settings: Setting[] = [
       path: "Settings → Vibration & Force Feedback → Rumble Strip Effects",
     },
     description:
-      "Sets the intensity of force feedback generated when driving over kerbs and rumble strips. F1 25 circuits have aggressive kerbs — this controls how much of that vibration reaches the wheel.",
+      "Dedicated vibration channel for kerb and rumble-strip contact — separate from On Track Effects. When a tyre rides over a painted rumble strip or kerb, this channel fires a buzz or thump through the wheel. It is an artificial effect: in real F1, kerb vibrations are felt through the seat and chassis, not the steering column.",
     details:
-      "F1 circuits are defined by their kerbs — from the flat, smooth sausage kerbs at Melbourne to the aggressive painted strips at Monaco and the two-tyre chicane at Monza. This setting determines how violently each one registers in your hands. On a direct-drive wheel, even a low value produces a clear physical jolt over an F1 kerb; Fanatec's official recommendation of 10 for the ClubSport DD reflects that the hardware already amplifies the signal substantially.\n\nKeeping this low also has a practical benefit: when you're trying to find the limit of how much kerb is safe to use, a subtle difference in feel is more informative than a jolting vibration that's similar whether you've clipped the edge or gone three inches too far. Too high and every kerb feels the same — violent.",
+      "F1 circuits are defined by their kerbs — from the flat sausage kerbs at Melbourne to the aggressive painted strips at Monaco and the Monza first chicane. This setting determines how violently each one registers in your hands. Because it is a separate channel from On Track Effects, you can dial kerb feedback independently from general road texture.\n\nOn a direct-drive wheel, even a low value produces a clear physical jolt over an F1 kerb; Fanatec's official recommendation of 10 for the ClubSport DD reflects that the hardware already amplifies the signal substantially.\n\nKeeping this modest also has a practical benefit: when you're trying to find the limit of how much kerb is safe to use, a graduated feel is more informative than a uniform violent jolt regardless of how far over the edge you are. Too high and every kerb feels the same — aggressive.",
     valueType: { kind: "numeric", min: 0, max: 100, default: 20, unit: "%" },
     increaseEffect:
       "More aggressive kerb feedback — strong vibration through the wheel when cutting or riding kerbs; helps identify how much kerb is safe.",
@@ -135,14 +138,14 @@ export const f125Settings: Setting[] = [
       path: "Settings → Vibration & Force Feedback → Off Track Effects",
     },
     description:
-      "Controls the strength of force feedback when the car leaves the circuit surface — grass, gravel, and run-off areas. Higher values give a pronounced physical warning when you go off.",
+      "Vibration and texture channel for when the car leaves the racing surface — grass, gravel, and run-off areas. Texture only: the car physics still apply regardless of this setting; it only changes what you feel in your hands.",
     details:
-      "In F1 25, leaving the track surface tends to be brief and consequential — either a bold kerb cut, a lock-up that drops two wheels on the grass, or a full excursion into the gravel. This setting determines how severely the wheel reacts in those moments. Fanatec's official recommendation for the ClubSport DD is 5, which is deliberately gentle — enough to register that you've left the circuit without causing a jarring jolt that could unsettle your hands on a straight-line recovery.\n\nA common mistake is setting this high for the dramatic effect. The problem is that when you genuinely lose the car and slide off on cold tyres in lap one, a violent off-track signal at the moment you most need control makes recovery harder.",
+      "In F1 25, leaving the track surface tends to be brief and consequential — either a bold kerb cut, a lock-up that drops two wheels on the grass, or a full excursion into the gravel. This setting determines how much texture and vibration the wheel produces in those moments. It is not a force that resists your inputs — just environmental texture feedback. Fanatec's official recommendation for the ClubSport DD is 5, which is deliberately gentle — enough to register that you've left the circuit without causing a jarring jolt that could unsettle your hands on a straight-line recovery.\n\nA common mistake is setting this high for the dramatic effect. The problem is that when you genuinely lose the car and slide off on cold tyres in lap one, a violent off-track vibration at the moment you most need control makes recovery harder.",
     valueType: { kind: "numeric", min: 0, max: 100, default: 20, unit: "%" },
     increaseEffect:
-      "More violent wheel reaction going off-track — strong vibration on grass or gravel serves as an immediate warning.",
+      "More vibration and texture when off-track — grass and gravel produce a stronger buzz through the wheel as a warning.",
     decreaseEffect:
-      "Softer off-track feel — the transition from tarmac to grass is less physically obvious.",
+      "Less off-track texture — the transition from tarmac to grass is less physically obvious, though car physics are unaffected.",
     sweetSpot:
       "Fanatec DD: 5 (Fanatec-official). V2.5: 10–20. G920: 20–30. Enough to register clearly without causing a distracting jolt.",
     warnings: [
@@ -171,22 +174,22 @@ export const f125Settings: Setting[] = [
       path: "Settings → Vibration & Force Feedback → Wheel Damper",
     },
     description:
-      "Adds resistance to wheel movement, smoothing out oscillation and high-frequency noise. Works at the software level — similar in effect to the on-wheel NDP (Natural Damper) setting on Fanatec hardware.",
+      "Velocity-dependent artificial friction — the faster the wheel is moving, the more it resists. Suppresses oscillation and makes the wheel feel heavier, but masks the true FFB signal rather than simulating tyre forces. Best kept very low on direct-drive wheels.",
     details:
-      "This setting adds a general heaviness to the wheel — not directional force, just resistance to movement. On a direct-drive base, a tiny amount can settle the motor at speed and prevent the wheel self-oscillating on long straights. Fanatec's official recommendation of 2 for the ClubSport DD is almost imperceptible but just enough to take the edge off any high-frequency motor noise.\n\nThe important thing is not to stack this on top of a high NDP value on the wheel base itself. The in-game damper and on-wheel NDP are doing the same job — doubling up makes the wheel feel slow and heavy, which directly hurts your ability to react to oversteer. Keep one or the other low; Fanatec recommends NDP 55 on the ClubSport DD for F1 25, so the in-game value is kept near zero.",
+      "Wheel Damper is not a tyre physics effect. It is a hardware-level damper effect (as described in Thrustmaster's technical documentation: \"controls how the wheel will react when it's moving — usually used as dynamic friction\") layered on top of — and potentially obscuring — the self-aligning torque signal that comes from the physics model. Every unit you add makes the wheel heavier and slower to move, which has nothing to do with what the tyres are doing.\n\nAt low values it can be useful: it prevents the wheel oscillating on straights and gives a sense of weight at slow speeds and when stopped. Fanatec's official recommendation of 2 for the ClubSport DD is almost imperceptible but just enough to settle the high-torque motor.\n\nOn a gear-driven wheel like the G920, more damper can calm the mechanical chatter inherent in the drive system — but you're trading FFB detail for smoothness. On a DD, that trade is almost never worth making. The important thing is not to stack this on top of a high NDP on the wheel base — the in-game damper and on-wheel NDP are doing the same job, and doubling up makes the wheel feel sluggish and unresponsive exactly when you need to catch oversteer fast.",
     valueType: { kind: "numeric", min: 0, max: 100, default: 0, unit: "%" },
     increaseEffect:
-      "Heavier, more damped wheel — fewer oscillations on straights, more planted feel, but detail is filtered out.",
+      "Heavier, slower wheel — oscillation on straights is suppressed, but the artificial friction masks the true tyre-derived FFB signal underneath.",
     decreaseEffect:
-      "Freer, more reactive wheel — sharper transient forces but more prone to oscillation at high speed.",
+      "Freer, more reactive wheel — sharper transient forces and better fidelity to the actual physics signal, but more prone to oscillation at high speed.",
     sweetSpot:
       "Fanatec DD: 2 (Fanatec-official, with NDP 55 on-wheel). V2.5: 5–15. G920: 15–25 to reduce gear-drive oscillation.",
     warnings: [
-      "Stacking high Wheel Damper with high NDP on-wheel settings makes the wheel feel heavy and unresponsive.",
-      "Keep very low on direct-drive hardware to preserve FFB fidelity.",
+      "This is artificial friction — it masks the tyre-derived FFB rather than simulating it. Keep as low as possible, especially on direct-drive hardware.",
+      "Stacking high Wheel Damper with high NDP on-wheel settings makes the wheel heavy and unresponsive.",
     ],
     interactsWith: [
-      { settingId: "f125-ffb-master", relationship: "High master + high damper compounds the heaviness — adjust together." },
+      { settingId: "f125-ffb-master", relationship: "High master + high damper compounds heaviness and degrades FFB fidelity — adjust together, keeping damper low." },
     ],
     recommendations: [
       { game: "f1-25", setup: "xsx", value: 2, notes: "Fanatec-recommended for the ClubSport DD. Pair with on-wheel NDP 55." },
@@ -208,22 +211,21 @@ export const f125Settings: Setting[] = [
       path: "Settings → Vibration & Force Feedback → Understeer Enhance",
     },
     description:
-      "Amplifies the lightening of the wheel that occurs when the front tyres lose grip and the car understeers. Makes the 'wheel goes light' signal more pronounced as a tyre limit warning.",
+      "Exaggerates the wheel going dramatically lighter when the front tyres lose grip and the car understeers. An artificial amplification of the natural SAT drop at the grip limit — a deliberate warning signal rather than a simulation.",
     details:
-      "When an F1 car understeers — the front tyres overwhelmed and the car pushing wide instead of turning — the self-aligning torque from the tyres collapses and the wheel naturally goes light. This setting amplifies that signal. On a high-downforce car at speed, the front end grip state changes quickly and the window between \"turning\" and \"pushing\" is narrow; an enhanced understeer signal can help you identify where your braking points are on different circuits.\n\nTIP: Very high values make the wheel feel alarmingly lifeless at slow-speed hairpins where a small amount of understeer is normal and expected — every tight corner exit suddenly feels like the front has washed. Keep it moderate and use it as a calibration aid rather than an alarm.",
+      "When an F1 car understeers, the physics are real: self-aligning torque collapses as the front tyres exceed their peak slip angle, and the wheel naturally goes lighter. Understeer Enhance artificially exaggerates that lightening effect — when you push past front grip, the wheel doesn't just soften, it goes dramatically light, almost like power steering has suddenly engaged.\n\nThis setting was removed in F1 23 but reinstated by F1 25 (confirmed across multiple F1 25 guides including f125game.com, briankoponen.com, and simstaff.net). It is most useful for gear-driven wheels like the G920, which have lower torque resolution and may not communicate the natural SAT drop clearly enough to be readable. Direct-drive users on the ClubSport DD often leave it off entirely — the DD already conveys the natural grip-loss lightening with enough force that the artificial exaggeration adds more alarm than information.\n\nTIP: Very high values make the wheel feel alarmingly lifeless at slow-speed hairpins where a small amount of understeer is normal and expected — every tight corner exit feels like the front has washed. Keep it moderate and use it as a calibration aid rather than an alarm.",
     valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
     increaseEffect:
-      "More pronounced wheel lightening on front tyre lock or understeer — the wheel noticeably unloads as a warning signal.",
+      "More dramatic wheel lightening during understeer — the wheel goes noticeably, artificially light as a clear warning that the front is washing.",
     decreaseEffect:
-      "Subtler or no wheel lightening during understeer — less obvious signal that the front is washing.",
+      "Subtler or no exaggerated lightening — understeer still produces some wheel lightening from the physics model, but the artificial amplification is reduced or absent.",
     sweetSpot:
-      "30–60. Enough to feel the front washing without the wheel going dead every time you tighten a hairpin exit.",
+      "DD: 0–30 (DD already conveys natural SAT drop). V2.5: 30–45. G920: 40–60 (gear-driven wheels benefit more from the exaggerated signal).",
     warnings: [
-      "Very high values make the wheel feel alarmingly dead at slow-speed hairpins where some understeer is normal.",
-      "Not confirmed in the F1 25 references — verify it exists in-game (may be absent or renamed).",
+      "Very high values make the wheel feel alarmingly dead at slow-speed hairpins where some understeer is normal — every tight exit becomes a false alarm.",
     ],
     interactsWith: [
-      { settingId: "f125-on-track-effects", relationship: "On Track Effects is the baseline force; Understeer Enhance modifies it specifically at the grip limit." },
+      { settingId: "f125-on-track-effects", relationship: "On Track Effects is a texture/vibration layer; Understeer Enhance is a separate signal that modifies wheel loading at the grip limit." },
     ],
     recommendations: [
       { game: "f1-25", setup: "xsx", value: 30, notes: "Moderate signal on the responsive DD — useful for calibrating braking zones without false alarms in hairpins." },
@@ -245,9 +247,9 @@ export const f125Settings: Setting[] = [
       path: "Settings → Vibration & Force Feedback → Maximum Wheel Rotation",
     },
     description:
-      "Sets the total lock-to-lock steering rotation recognised by the game. F1 single-seaters use approximately 360° of rotation in real life. Setting this correctly ensures the in-game steering wheel matches your physical wheel turn-for-turn.",
+      "Input mapping only — sets the total lock-to-lock steering rotation the game recognises. Has no effect on force feedback signals whatsoever. Setting this correctly ensures the in-game steering wheel matches your physical wheel turn-for-turn.",
     details:
-      "An F1 car's steering rack is extremely short — real cars use around 360° lock-to-lock, roughly a full turn each way. This setting tells the game how much of your wheel's physical rotation to map to that full lock range. Fanatec's recommended SEN for F1 25 on the ClubSport DD is 360, set on the wheel base itself via the on-wheel menu. Setting both this in-game value and the on-wheel SEN to 360 ensures 1:1 correspondence — the physical and virtual steering wheels move in perfect sync.\n\nIf your wheel base is set to AUTO SEN, the game's Maximum Wheel Rotation drives the physical lock-to-lock range automatically. Either approach works — just don't set a manual SEN on the base AND a different value here, as the two values multiply and full lock becomes unreachable (or a tiny flick reaches full lock instantly).",
+      "An F1 car's steering rack is extremely short — real cars use around 360° lock-to-lock, roughly a full turn each way. This setting tells the game how much of your wheel's physical rotation to map to that full lock range. It is purely an input-mapping control; it does not alter the FFB signal in any way. This is separate from the Calibration settings (under Settings → Controls → Calibration), which handle steering deadzone, linearity, and saturation — also input-mapping controls, not FFB.\n\nFanatec's recommended SEN for F1 25 on the ClubSport DD is 360, set on the wheel base itself via the on-wheel menu. Setting both this in-game value and the on-wheel SEN to 360 ensures 1:1 correspondence — the physical and virtual steering wheels move in perfect sync.\n\nIf your wheel base is set to AUTO SEN, the game's Maximum Wheel Rotation drives the physical lock-to-lock range automatically. Either approach works — just don't set a manual SEN on the base AND a different value here, as the two values multiply and full lock becomes unreachable (or a tiny flick reaches full lock instantly).",
     valueType: { kind: "numeric", min: 180, max: 900, default: 360, unit: "°" },
     increaseEffect:
       "More physical rotation needed for full lock — steering feels slower and more precise.",
