@@ -42,13 +42,24 @@ export default function RangeIndicator({ valueType }: { valueType: ValueType }) 
 
   // numeric default — applies to both "numeric" and "auto-or-numeric" with a number default
   const numericDefault = defaultValue as number
-  const pct = ((numericDefault - min) / (max - min)) * 100
+  const pct = Math.max(0, Math.min(100, ((numericDefault - min) / (max - min)) * 100))
+  // Keep the value label from overflowing at the ends.
+  const labelTransform = pct <= 8 ? "translateX(0)" : pct >= 92 ? "translateX(-100%)" : "translateX(-50%)"
 
   return (
     <div className="flex flex-col gap-1">
+      {/* Default value label, tracking the dot */}
+      <div className="relative h-5 text-xs">
+        <span
+          className="absolute whitespace-nowrap font-medium text-accent"
+          style={{ left: `${pct}%`, transform: labelTransform }}
+        >
+          {label(numericDefault)}
+        </span>
+      </div>
       <div className="relative h-2 rounded-full bg-neutral-800">
         <div
-          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-accent"
+          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-accent ring-2 ring-neutral-950"
           style={{ left: `calc(${pct}% - 6px)` }}
         />
       </div>
@@ -56,6 +67,7 @@ export default function RangeIndicator({ valueType }: { valueType: ValueType }) 
         <span>{label(min)}</span>
         <span>{label(max)}</span>
       </div>
+      <div className="text-[10px] uppercase tracking-wide text-neutral-500 text-center">default</div>
     </div>
   )
 }
