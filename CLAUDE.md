@@ -72,14 +72,41 @@ bun run dev        # Dev server
 bun run build      # Production build
 ```
 
+## Status
+
+**All 4 phases shipped (2026-05-30).** App builds clean, PWA-installable, offline-capable.
+
 ## Key Decisions
 
 - PWA with service worker for offline — all data baked into JS modules
 - No backend, no database — profiles stored in localStorage
 - Portrait-only mobile design
 - Three hardware setups selectable in app settings
-- Phase 1: Encyclopedia, Phase 2: Troubleshooter, Phase 3: Profiles, Phase 4: Polish
+- Active Game selector (FH6/F1 25) filters both encyclopedia and troubleshooter
+- Hybrid car diagram: baked-lime PNG image set + transparent SVG hit-map overlay
+- Content verified against authoritative sources: Fanatec Wheel Tuning Menu FAQ, official FH6 Advanced Wheel Tuning article, F1 25 simracingsetup + Fanatec recommended values
+- CS DD corrected to 14 settings (not 15) per current FAQ; V2.5 also corrected
+- F1 25 On Track Effects described as texture layer (not cornering force) — per research/f1-25-ffb-explained.md
+
+## UI Features
+
+- Red highlighting of on-wheel acronyms (SEN/FF/NDP/BRF…) in encyclopedia
+- Game-specific fix badges on troubleshooter symptoms
+- Game + setup brand logos (GameLogo/SetupLogo on white chips)
+- Slider default-value labels
+- Scroll-to-top on navigation
+
+## Git Remotes
+
+- **Forgejo** (fetch): `git@forgejo:NatMan3000/wheely-good.git`
+- **GitHub** (push mirror): `git@github.com:NatMan3000/WheelyGood.git`
+- Dual-push origin set up. Push to `origin` sends to both.
+
+## Known State
+
+- `docs/` contains raw PNG source files (~55MB, untracked) — keep untracked
+- Two PNGs were accidentally committed in an early `git add -A` — they remain in history
 
 ## Plan
 
-See `plans/wheely-good-app.md` for full PRD.
+See `plans/wheely-good-app.md` for full PRD (all phases complete).

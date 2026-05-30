@@ -455,38 +455,45 @@ src/
 
 ## Phase Plan
 
-### Phase 1 — Foundation + Encyclopedia (skeleton + seed first)
+### Phase 1 — Foundation + Encyclopedia (skeleton + seed first) ✅
 
-1. App shell — bottom nav (mobile) / sidebar (desktop), routing incl. deep-link routes (`/setting/:id`)
-2. Theme system + setup selector (localStorage-backed contexts: `useTheme`, `useSetup`)
-3. Type definitions (`Setting`, `ValueType`, `SettingLocation`, ids/enums)
-4. **Seed dataset** — ~5–8 real settings (e.g. CS DD: NDP, FF, FEI, SEN; CSP V3: brake force) to prove the loop
-5. Encyclopedia list + `SettingDetail` sheet + shared components (`RangeIndicator`, `DirectionCard`, `SettingChip`) against the seed
-6. **Then** bulk-author content (hybrid: Kai drafts, Nathan verifies) once the UI loop is proven
+1. ✅ App shell — bottom nav (mobile) / sidebar (desktop), routing incl. deep-link routes (`/setting/:id`)
+2. ✅ Theme system + setup selector (localStorage-backed contexts: `useTheme`, `useSetup`)
+3. ✅ Type definitions (`Setting`, `ValueType`, `SettingLocation`, ids/enums)
+4. ✅ **Seed dataset** — ~5–8 real settings to prove the loop
+5. ✅ Encyclopedia list + `SettingDetail` sheet + shared components (`RangeIndicator`, `DirectionCard`, `SettingChip`) against the seed
+6. ✅ **Bulk-author content** — full content for DD/V2.5/G920 + FH6/F1 25, verified against authoritative sources
 
 *(Service worker / offline moved to Phase 4 — a live SW during active dev causes stale-asset pain.)*
 
-### Phase 2 — Troubleshooter
+### Phase 2 — Troubleshooter ✅
 
-- Car diagram SVG component
-- Symptom data module
-- Symptom list + detail views with fix recommendations
-- Deep links from troubleshooter → encyclopedia
+- ✅ Car diagram — hybrid baked-lime PNG image set + transparent SVG hit-map overlay
+- ✅ Symptom data module (23 symptoms)
+- ✅ Symptom list + detail views with fix recommendations
+- ✅ Deep links from troubleshooter → encyclopedia
+- ✅ Active game filter on symptoms and fixes
+- ✅ Game-specific fix badges
 
-### Phase 3 — Profile Manager
+### Phase 3 — Profile Manager ✅
 
-- localStorage profile CRUD
-- Profile editor with setting value inputs
-- Profile comparison view
-- Export/import as text
+- ✅ localStorage profile CRUD
+- ✅ Profile editor with setting value inputs
+- ✅ Profile comparison view
+- ✅ Export/import as text
 
-### Phase 4 — Polish + PWA
+### Phase 4 — Polish + PWA ✅
 
-- Service worker / offline caching (`vite-plugin-pwa` — wraps Workbox; check Vite 8 compat)
-- `manifest.webmanifest` + app icons + splash screen + favicon wired into `index.html`
-- PWA install prompt
-- Animations and transitions
-- Desktop responsive layout (two-column reflow)
+- ✅ Service worker / offline caching (`vite-plugin-pwa`)
+- ✅ `manifest.webmanifest` + app icons + splash screen + favicon wired into `index.html`
+- ✅ PWA install prompt
+- ✅ Animations and transitions
+- ✅ Desktop responsive layout (two-column reflow)
+- ✅ Active Game selector (FH6/F1 25) — filters encyclopedia + troubleshooter
+- ✅ On-wheel acronym red highlighting (SEN/FF/NDP/BRF…)
+- ✅ Game + setup brand logos (GameLogo/SetupLogo chips)
+- ✅ Slider default-value labels
+- ✅ Scroll-to-top on navigation
 
 ### Future (Phase 5+)
 
