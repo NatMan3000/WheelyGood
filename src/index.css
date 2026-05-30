@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+/* Runtime-switchable accent — useTheme sets --accent on <html>. */
+@theme inline {
+  --color-accent: var(--accent);
+}
+
+:root {
+  --accent: #b4ff00;
+}
+
+body {
+  margin: 0;
+  background: #0a0a0a;
+  color: #e5e5e5;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+#root {
+  min-height: 100svh;
+}
