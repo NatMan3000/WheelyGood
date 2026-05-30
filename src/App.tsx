@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import ScrollToTop from './components/ScrollToTop'
 import AppShell from './components/layout/AppShell'
 import EncyclopediaPage from './pages/EncyclopediaPage'
 import TroubleshooterPage from './pages/TroubleshooterPage'
@@ -11,6 +12,8 @@ import SymptomDetailPage from './pages/SymptomDetailPage'
 
 export default function App() {
   return (
+    <>
+    <ScrollToTop />
     <Routes>
       <Route element={<AppShell />}>
         <Route path="/" element={<Navigate to="/learn" replace />} />
@@ -27,5 +30,6 @@ export default function App() {
       <Route path="/symptom/:id" element={<SymptomDetailPage />} />
       <Route path="*" element={<Navigate to="/learn" replace />} />
     </Routes>
+    </>
   )
 }
