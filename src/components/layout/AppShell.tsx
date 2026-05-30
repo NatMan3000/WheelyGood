@@ -5,7 +5,7 @@ import PWAInstallPrompt from "../PWAInstallPrompt"
 
 export default function AppShell() {
   return (
-    <div className="min-h-screen text-white">
+    <div className="min-h-screen text-white tread-surface">
       <Sidebar />
       <BottomNav />
       {/* pb-24 clears bottom nav on mobile; md:pl-56 clears sidebar on desktop */}

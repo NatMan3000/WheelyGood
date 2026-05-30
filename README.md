@@ -1,73 +1,43 @@
-# React + TypeScript + Vite
+# WheelyGood
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sim racing wheel settings PWA — settings encyclopedia, troubleshooter, and profile manager for Fanatec hardware with Xbox and PC.
 
-Currently, two official plugins are available:
+**Users:** Nathan + Josh  
+**Stack:** React + Vite + TypeScript + TailwindCSS  
+**Status:** All 4 phases shipped. Live at dev server; static hosting pending.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- **Simpedia** — tap any setting from any hardware or game to see what it does, what turning it up/down changes, interactions with other settings, and recommended values
+- **Troubleshooter** — tap on a car diagram zone, pick your symptom (e.g. "car understeers"), get an ordered fix list pointing to Simpedia
+- **Saves** — save/load/compare named hardware + in-game setting profiles per game and surface type
+- **Settings** — choose your active setup (XSX / XSS / PC) and active game
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Hardware Setups
 
-## Expanding the ESLint configuration
+| Setup | Wheel Base | Wheel Rim | Pedals | Extras |
+|-------|-----------|-----------|--------|--------|
+| Xbox Series X | ClubSport DD (15Nm) | GT Alcantara V2 Xbox | CSP V3 (load cell) | Shifter SQ + Handbrake V1.5 |
+| Xbox Series S | ClubSport Wheelbase V2.5 | CSL Elite WRC / GT3 | CSL Elite V2 (load cell) | |
+| PC | Logitech G920 Driving Force | (integrated) | (integrated) | |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Commands
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+bun install        # Install dependencies
+bun run dev        # Dev server (add --host for phone access)
+bun run build      # Production build
+bun run preview    # Preview production build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Architecture
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Static PWA — no backend. All settings data baked into JS modules at build time. Profiles stored in `localStorage`. Fully offline after first load via Workbox service worker.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Timeline History
+
+| Date | Event | Details |
+|------|-------|---------|
+| 2026-05-30 | [**Project created**](sessions/2026-05-30-project-scaffold.md) | WheelyGood PWA scaffolded — Vite + React + TS + Tailwind. Hardware research complete for 3 setups (Fanatec DD, V2.5, Logitech G920). App plan written. |
+| 2026-05-30 | [**All 4 phases shipped — full app built in one session**](sessions/2026-05-30-full-app-build.md) | Phases 1–4 complete: Encyclopedia (full content for DD/V2.5/G920 + FH6/F1 25), Troubleshooter (car diagram + 23 symptoms), Profile Manager (CRUD/compare/export-import), PWA (offline + installable). Active game filter, acronym highlighting, game/setup logos, content verified against authoritative Fanatec + FH6 + F1 25 sources. ~50 commits. |
+| 2026-05-30 | [**UI polish + F1 25 research**](sessions/2026-05-30-ui-polish-f1-research.md) | impeccable skill pass: OKLCH tokens, stroke icons, OLED-style wheel-code tags, brand logos, Simpedia rename, tyre-tread background. F1 25 FFB re-researched (Pit Stop Effects added, Understeer Enhance corrected to toggle). Commit f173495 dual-pushed. |

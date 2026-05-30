@@ -45,20 +45,30 @@
     -moz-osx-font-smoothing: grayscale;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-    /*
-      Racing tyre-tread background. Two layered tiles on the near-black base:
-      1. Chunky tread blocks (the SVG) — staggered rounded rectangles in a
-         barely-there lighter slate, like the lugs on a rally tyre.
-      2. A faint vertical "groove" gradient down the centre channel.
-      Both kept extremely low-contrast so list/card content stays readable; the
-      texture only reads when you look for it, giving the black surface depth
-      instead of a flat fill.
-    */
+    background-color: var(--color-neutral-950);
+  }
+
+  /*
+    Racing tyre-tread surface — a real tread photo, heavily darkened so it reads
+    as textured tarmac/rubber rather than a loud image. The dark gradient on top
+    keeps card and list content readable; the tread shows through in the gutters.
+    `fixed` attachment means every element using this class shares one viewport-
+    anchored tile, so an opaque sticky header painted with the same class lines
+    up seamlessly with the body and fully blocks content scrolling beneath it.
+  */
+  .tread-surface {
     background-color: var(--color-neutral-950);
     background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='120' viewBox='0 0 80 120'%3E%3Cg fill='%23ffffff' fill-opacity='0.022'%3E%3Crect x='6' y='4' width='26' height='18' rx='5'/%3E%3Crect x='48' y='4' width='26' height='18' rx='5'/%3E%3Crect x='27' y='34' width='26' height='18' rx='5'/%3E%3Crect x='6' y='64' width='26' height='18' rx='5'/%3E%3Crect x='48' y='64' width='26' height='18' rx='5'/%3E%3Crect x='27' y='94' width='26' height='18' rx='5'/%3E%3C/g%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-attachment: fixed;
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-neutral-950) 90%, transparent),
+        color-mix(in srgb, var(--color-neutral-950) 93%, transparent)
+      ),
+      url("/tyre-tread.jpg");
+    background-repeat: no-repeat, repeat;
+    background-size: cover, 540px auto;
+    background-position: center, center;
+    background-attachment: fixed, fixed;
   }
 
   /* One visible keyboard-focus treatment for everything that doesn't opt out. */

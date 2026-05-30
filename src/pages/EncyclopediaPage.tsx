@@ -31,7 +31,7 @@ export default function EncyclopediaPage() {
           the AppShell wrapper's px-4/pt-4 so the bar sits flush at the top and
           spans full width; its own pt-4 keeps the title at the same 16px
           baseline as every other page. */}
-      <div className="sticky top-0 z-20 -mx-4 -mt-4 border-b border-neutral-800 bg-neutral-950/90 px-4 pt-4 pb-3 backdrop-blur-md">
+      <div className="tread-surface sticky top-0 z-20 -mx-4 -mt-4 border-b border-neutral-800 px-4 pt-4 pb-3">
         <div className="flex flex-col gap-4">
           <PageHeader title="Simpedia" subtitle="What each setting does, and which way to turn it." />
           <ContextPicker />

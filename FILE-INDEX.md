@@ -4,7 +4,7 @@
 
 | File | Retention | Description |
 |------|-----------|-------------|
-| `wheely-good-app.md` | permanent | Full app PRD — features, data models, UI flows, phase plan |
+| `wheely-good-app-COMPLETED.md` | permanent | Full app PRD — features, data models, UI flows, phase plan. All 4 phases shipped 2026-05-30. |
 
 ## docs/
 
@@ -25,3 +25,11 @@
 | File | Retention | Description |
 |------|-----------|-------------|
 | (empty) | | |
+
+## public/
+
+| File | Retention | Description |
+|------|-----------|-------------|
+| `brand-fanatec.png` | permanent | Fanatec brand logo (256px, used in BrandLogo component and Settings cards) |
+| `brand-logitech.png` | permanent | Logitech G brand logo (256px, used in BrandLogo component and Settings cards) |
+| `tyre-tread.jpg` | permanent | Real tyre tread JPEG used as fixed background texture across the app |
