@@ -1,4 +1,4 @@
-import type { GameId, HardwareId, Setting, SettingCategory, SetupId } from "../types"
+import type { GameId, HardwareId, Setting, SettingCategory, SettingValue, SetupId, SurfaceType } from "../types"
 import { setupById } from "./setups"
 import { fanatecDdSettings } from "./hardware/fanatec-dd"
 import { fanatecV25Settings } from "./hardware/fanatec-v25"
@@ -53,6 +53,25 @@ export function settingsForSetup(setupId: SetupId): Setting[] {
 /** Settings tied to a specific game (in-game category). */
 export function settingsForGame(gameId: GameId): Setting[] {
   return allSettings.filter((s) => s.games?.includes(gameId))
+}
+
+/**
+ * Best recommended value for a setting in a given context — a matching
+ * `recommendation` if one exists, otherwise the valueType default.
+ * Used by the profile editor to pre-fill values.
+ */
+export function recommendedValue(
+  setting: Setting,
+  opts: { game?: GameId; setup?: SetupId; surface?: SurfaceType } = {},
+): SettingValue {
+  const rec = setting.recommendations?.find(
+    (r) =>
+      (opts.game === undefined || r.game === opts.game) &&
+      (opts.setup === undefined || r.setup === opts.setup) &&
+      (opts.surface === undefined || r.surface === opts.surface),
+  )
+  if (rec) return rec.value
+  return setting.valueType.default
 }
 
 export const games: { id: GameId; name: string }[] = [
