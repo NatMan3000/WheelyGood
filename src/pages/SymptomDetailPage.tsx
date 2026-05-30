@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { symptomById } from "../data/symptoms/symptoms"
 import { settingById, games } from "../data/settings"
 import { useSetup } from "../hooks/useSetup"
+import { useGame } from "../hooks/useGame"
 import { highlightAcronyms } from "../utils/highlightAcronyms"
 
 const gameName = (id: string) => games.find((g) => g.id === id)?.name ?? id
@@ -11,6 +12,7 @@ export default function SymptomDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { setup } = useSetup()
+  const { gameId, game } = useGame()
   const [showAll, setShowAll] = useState(false)
   const symptom = id ? symptomById(id) : undefined
 
@@ -27,12 +29,14 @@ export default function SymptomDetailPage() {
 
   const setupHardware = new Set(setup.components.map((c) => c.id))
   const sortedFixes = [...symptom.fixes].sort((a, b) => a.priority - b.priority)
-  // A fix applies if it has no hardware constraint, or its hardware overlaps the active setup.
-  const setupFixes = sortedFixes.filter(
-    (f) => !f.hardware || f.hardware.some((h) => setupHardware.has(h)),
-  )
-  const visibleFixes = showAll ? sortedFixes : setupFixes
-  const hiddenCount = sortedFixes.length - setupFixes.length
+  // A fix applies to your context if its hardware overlaps the active setup
+  // (or has none) AND its game matches the active game (or has none).
+  const inContext = (f: (typeof sortedFixes)[number]) =>
+    (!f.hardware || f.hardware.some((h) => setupHardware.has(h))) &&
+    (!f.game || f.game.includes(gameId))
+  const contextFixes = sortedFixes.filter(inContext)
+  const visibleFixes = showAll ? sortedFixes : contextFixes
+  const hiddenCount = sortedFixes.length - contextFixes.length
 
   return (
     <div className="min-h-svh bg-neutral-950 text-white">
@@ -73,16 +77,16 @@ export default function SymptomDetailPage() {
                   className="text-xs text-neutral-400 hover:text-accent transition-colors duration-150"
                 >
                   {showAll
-                    ? `Showing all setups · filter to ${setup.shortName}`
-                    : `Showing ${setup.shortName} · show all setups (+${hiddenCount})`}
+                    ? `Showing everything · filter to ${setup.shortName} + ${game.name}`
+                    : `Showing ${setup.shortName} + ${game.name} · show all (+${hiddenCount})`}
                 </button>
               )}
             </div>
             {visibleFixes.length === 0 && (
               <p className="text-sm text-neutral-500">
-                No fixes specific to your {setup.shortName}.{" "}
+                No fixes specific to your {setup.shortName} + {game.name}.{" "}
                 <button onClick={() => setShowAll(true)} className="text-accent">
-                  Show all setups
+                  Show all
                 </button>
               </p>
             )}

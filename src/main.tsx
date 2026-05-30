@@ -5,6 +5,7 @@ import './index.css'
 import App from './App.tsx'
 import { ThemeProvider } from './hooks/useTheme'
 import { SetupProvider } from './hooks/useSetup'
+import { GameProvider } from './hooks/useGame'
 import { ProfilesProvider } from './hooks/useProfiles'
 
 createRoot(document.getElementById('root')!).render(
@@ -12,9 +13,11 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <ThemeProvider>
         <SetupProvider>
-          <ProfilesProvider>
-            <App />
-          </ProfilesProvider>
+          <GameProvider>
+            <ProfilesProvider>
+              <App />
+            </ProfilesProvider>
+          </GameProvider>
         </SetupProvider>
       </ThemeProvider>
     </BrowserRouter>

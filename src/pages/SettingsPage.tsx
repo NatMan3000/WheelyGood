@@ -1,11 +1,14 @@
 import { useSetup } from "../hooks/useSetup"
 import { useTheme } from "../hooks/useTheme"
+import { useGame } from "../hooks/useGame"
 import { setups } from "../data/setups"
 import { themes } from "../data/themes"
+import { games } from "../data/settings"
 import type { SetupId } from "../types"
 
 export default function SettingsPage() {
   const { setupId, setSetupId } = useSetup()
+  const { gameId, setGameId } = useGame()
   const { themeId, theme, setThemeId } = useTheme()
 
   return (
@@ -47,6 +50,34 @@ export default function SettingsPage() {
             )
           })}
         </div>
+      </section>
+
+      {/* ── Active Game ── */}
+      <section className="mb-8">
+        <p className="text-xs uppercase tracking-wide text-neutral-500 mb-3">Active Game</p>
+        <div className="flex flex-wrap gap-2">
+          {games.map((g) => {
+            const isSelected = g.id === gameId
+            return (
+              <button
+                key={g.id}
+                type="button"
+                onClick={() => setGameId(g.id)}
+                className={[
+                  "rounded-lg px-4 min-h-[44px] text-sm transition-colors duration-150",
+                  isSelected
+                    ? "bg-accent text-black font-medium"
+                    : "border border-neutral-700 text-neutral-300 hover:border-accent",
+                ].join(" ")}
+              >
+                {g.name}
+              </button>
+            )
+          })}
+        </div>
+        <p className="text-sm text-neutral-400 mt-2">
+          The encyclopedia and troubleshooter suggestions adjust to the game you pick.
+        </p>
       </section>
 
       {/* ── Accent Theme ── */}

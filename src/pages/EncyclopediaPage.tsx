@@ -1,13 +1,15 @@
 import { useState } from "react"
 import { useSetup } from "../hooks/useSetup"
-import { settingsForSetup } from "../data/settings"
+import { useGame } from "../hooks/useGame"
+import { settingsForContext } from "../data/settings"
 import SettingsList from "../components/encyclopedia/SettingsList"
 
 export default function EncyclopediaPage() {
   const { setupId, setup } = useSetup()
+  const { gameId, game } = useGame()
   const [query, setQuery] = useState("")
 
-  const baseSettings = settingsForSetup(setupId)
+  const baseSettings = settingsForContext(setupId, gameId)
 
   const filtered = query.trim()
     ? baseSettings.filter((s) => {
@@ -25,6 +27,9 @@ export default function EncyclopediaPage() {
         <h1 className="text-2xl font-bold text-white">Encyclopedia</h1>
         <span className="bg-accent text-black rounded-full px-2 py-0.5 text-xs">
           {setup.shortName}
+        </span>
+        <span className="bg-sky-500/15 text-sky-300 border border-sky-500/40 rounded-full px-2 py-0.5 text-xs">
+          {game.name}
         </span>
       </div>
 

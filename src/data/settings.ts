@@ -56,6 +56,18 @@ export function settingsForGame(gameId: GameId): Setting[] {
 }
 
 /**
+ * Settings relevant to the active context: hardware settings for the setup's
+ * components, plus in-game settings for the ACTIVE game only (so the encyclopedia
+ * reflects which game you're playing).
+ */
+export function settingsForContext(setupId: SetupId, gameId: GameId): Setting[] {
+  const hw = new Set(hardwareForSetup(setupId))
+  return allSettings.filter((s) =>
+    s.category === "in-game" ? (s.games?.includes(gameId) ?? false) : s.hardware.some((h) => hw.has(h)),
+  )
+}
+
+/**
  * Best recommended value for a setting in a given context — a matching
  * `recommendation` if one exists, otherwise the valueType default.
  * Used by the profile editor to pre-fill values.
