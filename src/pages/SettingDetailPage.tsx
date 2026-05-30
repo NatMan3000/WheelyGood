@@ -3,6 +3,7 @@ import { settingById } from "../data/settings"
 import RangeIndicator from "../components/shared/RangeIndicator"
 import DirectionCard from "../components/shared/DirectionCard"
 import SettingChip from "../components/shared/SettingChip"
+import { highlightAcronyms } from "../utils/highlightAcronyms"
 
 function accessLabel(access: "on-wheel-tuning" | "in-game"): string {
   return access === "on-wheel-tuning" ? "On-wheel tuning" : "In-game"
@@ -43,7 +44,7 @@ export default function SettingDetailPage() {
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-2xl font-bold">{setting.name}</h1>
           {setting.abbreviation && (
-            <span className="rounded bg-neutral-800 text-neutral-300 px-2 py-0.5 text-xs">
+            <span className="rounded bg-neutral-800 text-red-500 font-semibold px-2 py-0.5 text-xs">
               {setting.abbreviation}
             </span>
           )}
@@ -58,11 +59,28 @@ export default function SettingDetailPage() {
         <div className="inline-flex gap-2 text-sm text-neutral-400">
           <span>{accessLabel(setting.location.access)}</span>
           <span>·</span>
-          <span className="text-neutral-200">{setting.location.path}</span>
+          <span className="text-neutral-200">{highlightAcronyms(setting.location.path)}</span>
         </div>
 
         {/* Description */}
-        <p className="text-neutral-300">{setting.description}</p>
+        <p className="text-neutral-300">{highlightAcronyms(setting.description)}</p>
+
+        {/* Full official detail (e.g. verbatim FH6 article text) */}
+        {setting.details && (
+          <div className="space-y-2 rounded-lg bg-neutral-900/60 border border-neutral-800 p-3">
+            {setting.details.split("\n\n").map((para, i) => {
+              const tip = para.startsWith("TIP:")
+              return (
+                <p
+                  key={i}
+                  className={tip ? "text-sm text-accent" : "text-sm text-neutral-300"}
+                >
+                  {highlightAcronyms(para)}
+                </p>
+              )
+            })}
+          </div>
+        )}
 
         {/* Range indicator */}
         <RangeIndicator valueType={setting.valueType} />
@@ -77,7 +95,7 @@ export default function SettingDetailPage() {
         {setting.sweetSpot && (
           <div className="rounded-lg bg-neutral-900 border-l-4 border-accent p-3">
             <p className="text-xs uppercase text-neutral-500 mb-1">Sweet spot</p>
-            <p className="text-neutral-200 text-sm">{setting.sweetSpot}</p>
+            <p className="text-neutral-200 text-sm">{highlightAcronyms(setting.sweetSpot)}</p>
           </div>
         )}
 
@@ -92,7 +110,7 @@ export default function SettingDetailPage() {
                     id={interaction.settingId}
                     label={settingById(interaction.settingId)?.name ?? interaction.settingId}
                   />
-                  <span className="text-xs text-neutral-500 pl-1">{interaction.relationship}</span>
+                  <span className="text-xs text-neutral-500 pl-1">{highlightAcronyms(interaction.relationship)}</span>
                 </div>
               ))}
             </div>
@@ -104,7 +122,7 @@ export default function SettingDetailPage() {
           <ul className="space-y-1">
             {setting.warnings.map((warning, i) => (
               <li key={i} className="text-sm text-amber-400">
-                ⚠️ {warning}
+                ⚠️ {highlightAcronyms(warning)}
               </li>
             ))}
           </ul>

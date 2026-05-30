@@ -1,3 +1,5 @@
+import { highlightAcronyms } from "../../utils/highlightAcronyms"
+
 export default function DirectionCard({
   direction,
   text,
@@ -16,7 +18,7 @@ export default function DirectionCard({
       <p className={`text-sm font-semibold ${isUp ? "text-emerald-400" : "text-red-400"}`}>
         {isUp ? "Turn it UP ↑" : "Turn it DOWN ↓"}
       </p>
-      <p className="text-neutral-300 text-sm mt-1">{text}</p>
+      <p className="text-neutral-300 text-sm mt-1">{highlightAcronyms(text)}</p>
     </div>
   )
 }

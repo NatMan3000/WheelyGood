@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { symptomById } from "../data/symptoms/symptoms"
 import { settingById } from "../data/settings"
 import { useSetup } from "../hooks/useSetup"
+import { highlightAcronyms } from "../utils/highlightAcronyms"
 
 export default function SymptomDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -55,7 +56,7 @@ export default function SymptomDetailPage() {
         </div>
 
         {/* Description */}
-        <p className="text-neutral-300">{symptom.description}</p>
+        <p className="text-neutral-300">{highlightAcronyms(symptom.description)}</p>
 
         {/* Fixes */}
         {sortedFixes.length > 0 && (
@@ -111,7 +112,7 @@ export default function SymptomDetailPage() {
                 </div>
 
                 {/* Explanation */}
-                <p className="text-neutral-300 text-sm">{fix.explanation}</p>
+                <p className="text-neutral-300 text-sm">{highlightAcronyms(fix.explanation)}</p>
               </div>
             ))}
           </div>

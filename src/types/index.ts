@@ -72,6 +72,9 @@ export interface Setting {
   location: SettingLocation
 
   description: string
+  /** Optional long-form explanation (scenario-based), shown on the detail page.
+   *  Paragraphs separated by blank lines; a paragraph starting "TIP:" is accented. */
+  details?: string
   valueType: ValueType
 
   increaseEffect: string
