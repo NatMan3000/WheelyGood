@@ -78,9 +78,9 @@ export default function CarDiagram({ activeArea, onSelectArea }: Props) {
 
           {/* Front body half */}
           <rect
-            x={37}
+            x={39}
             y={16}
-            width={26}
+            width={22}
             height={31}
             rx={6}
             onClick={() => onSelectArea("front")}
@@ -89,31 +89,31 @@ export default function CarDiagram({ activeArea, onSelectArea }: Props) {
 
           {/* Rear body half */}
           <rect
-            x={37}
+            x={39}
             y={50}
-            width={26}
+            width={22}
             height={36}
             rx={6}
             onClick={() => onSelectArea("rear")}
             style={zoneStyle("rear", true)}
           />
 
-          {/* Brakes — trace the four wheels */}
+          {/* Brakes — trace the four wheels (inner edges at x40/x60 per the rack) */}
           <g onClick={() => onSelectArea("brakes")} style={zoneStyle("brakes", true)}>
-            <rect x={30} y={18} width={7} height={10} rx={2.5} />
-            <rect x={63} y={18} width={7} height={10} rx={2.5} />
-            <rect x={30} y={62} width={7} height={10} rx={2.5} />
-            <rect x={63} y={62} width={7} height={10} rx={2.5} />
+            <rect x={31} y={15} width={9} height={13} rx={3} />
+            <rect x={60} y={15} width={9} height={13} rx={3} />
+            <rect x={31} y={62} width={9} height={13} rx={3} />
+            <rect x={60} y={62} width={9} height={13} rx={3} />
           </g>
 
           {/* Steering — trace the rack + centre crosshair (drawn last → wins centre clicks) */}
           <g onClick={() => onSelectArea("steering")} style={zoneStyle("steering", true)}>
-            {/* steering rack across the front axle */}
-            <rect x={37} y={21} width={26} height={3.6} rx={1.8} />
+            {/* steering rack across the front axle, between the wheel inner edges */}
+            <rect x={40} y={21} width={20} height={3.6} rx={1.8} />
             {/* centre crosshair ring */}
-            <circle cx={50} cy={47} r={6} style={{ fill: "transparent" }} />
-            <line x1={50} y1={42} x2={50} y2={52} strokeWidth={1} />
-            <line x1={45} y1={47} x2={55} y2={47} strokeWidth={1} />
+            <circle cx={50} cy={49} r={6} style={{ fill: "transparent" }} />
+            <line x1={50} y1={44} x2={50} y2={54} strokeWidth={1} />
+            <line x1={45} y1={49} x2={55} y2={49} strokeWidth={1} />
           </g>
         </svg>
       </div>
