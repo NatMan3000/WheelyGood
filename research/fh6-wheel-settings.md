@@ -13,6 +13,15 @@ sources:
 
 # Forza Horizon 6 — Advanced Wheel & Force Feedback Settings
 
+> **UPDATE 2026-05-30 — full official article obtained** (Nathan pasted it directly). It supersedes the search-snippet reconstruction below. Corrections applied to `src/data/games/forza-horizon-6.ts`:
+> - **No "Off-Road Feel Scale"** in FH6 — the official Advanced Wheel Settings list has only **Road Feel Scale**. Removed.
+> - **No in-game "Steering Rotation" slider** — rotation is set by the wheel driver / on-wheel SEN; in-game you change the ratio via **Steering Sensitivity**. Removed.
+> - **Steering Sensitivity DOES use a soft lock** (the third-party guides claiming "no soft lock" were wrong). Forza's advice: set rotation on the wheel, only touch this slider if the wheel can't set rotation.
+> - **Force Feedback Scale default is a neutral value** (not max) — increasing risks clipping.
+> - **G920 tip (official):** turn **Wheel Damper** and **Center Spring** DOWN on low-torque wheels (G920/G29) for more tyre feel; DD wheels benefit from some damper. Encoded as setup recommendations.
+> - Added **Normal vs Simulation steering**, **Steering Axis Deadzone Outside**, **Steering Axis Invert**. Per-pedal axis deadzones exist but aren't catalogued (rarely adjusted).
+> - `Force Feedback Minimum Force` = pneumatic trail scalar (onset-of-slip cue), NOT a force floor.
+
 ## Source notes
 
 The canonical source is the official Forza Support article:
