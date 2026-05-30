@@ -152,11 +152,11 @@ export const symptoms: Symptom[] = [
     area: "steering",
     fixes: [
       {
-        settingId: "fh6-centre-steering-deadzone",
+        settingId: "fh6-steering-deadzone-inside",
         direction: "decrease",
         priority: 1,
         explanation:
-          "Centre Steering Deadzone directly creates this dead band. Most quality wheel bases need 0–2%; anything higher introduces the numb-centre feeling. Reduce to the minimum needed to keep the car from wandering on a straight.",
+          "Steering Axis Deadzone Inside creates this dead band around centre. Most quality wheel bases need 0; anything higher introduces the numb-centre feeling. Reduce to the minimum needed to keep the car from wandering on a straight.",
         game: ["fh6"],
       },
       {
@@ -334,11 +334,11 @@ export const symptoms: Symptom[] = [
     area: "front",
     fixes: [
       {
-        settingId: "fh6-ffb-understeer",
-        direction: "increase",
+        settingId: "fh6-mechanical-trail-scale",
+        direction: "decrease",
         priority: 1,
         explanation:
-          "FFB Understeer controls how much the wheel lightens when the front tyres lose grip. Increasing it makes the 'wheel going light' signal more pronounced, giving you earlier and clearer warning that the front is washing — helping you learn to ease the steering and brake later/less.",
+          "FH6 has no 'FFB Understeer' setting — understeer feel comes from Mechanical Trail Scale, which controls how light the wheel goes when the front washes out. Lowering it lets that lightening come through more clearly, giving earlier warning that the front is pushing wide.",
         game: ["fh6"],
       },
       {
@@ -401,11 +401,11 @@ export const symptoms: Symptom[] = [
         hardware: ["fanatec-v25"],
       },
       {
-        settingId: "fh6-ffb-understeer",
+        settingId: "fh6-ffb-minimum-force",
         direction: "increase",
         priority: 2,
         explanation:
-          "The understeer setting amplifies the wheel-lightening that signals front tyre loss. Increasing it gives you a larger physical change to sense as you approach the limit.",
+          "FFB Minimum Force scales pneumatic trail — the slip/limit cue that drops as the tyre lets go. Raising it makes the onset-of-grip-loss easier to feel, so you can sense the limit before you exceed it.",
         game: ["fh6"],
       },
       {
@@ -617,7 +617,7 @@ export const symptoms: Symptom[] = [
         hardware: ["csp-v3"],
       },
       {
-        settingId: "fanatec-v25-abs",
+        settingId: "fanatec-v25-bli",
         direction: "increase",
         priority: 2,
         explanation:
@@ -773,7 +773,7 @@ export const symptoms: Symptom[] = [
         hardware: ["csp-v3"],
       },
       {
-        settingId: "fanatec-v25-abs",
+        settingId: "fanatec-v25-bli",
         direction: "increase",
         priority: 1,
         explanation:

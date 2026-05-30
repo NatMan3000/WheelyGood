@@ -1,9 +1,9 @@
 import type { Setting } from "../../types"
 
-// ── SEED DATASET — ClubSport DD on-wheel tuning menu ──────────────────
-// DRAFT values authored by Kai (hybrid sourcing). Nathan to verify each
-// against the actual on-wheel tuning menu before this is treated as truth.
-// Every setting is flagged `unverified: true` until confirmed.
+// ── ClubSport DD — on-wheel tuning menu ───────────────────────────────
+// VERIFIED against Fanatec's official "What can be set in the Wheel Tuning
+// Menu?" FAQ (names, ranges, defaults). NDP/NFR/NIN/LIN are Direct-Drive only.
+// Sweet-spot guidance is editorial (community-typical), not from Fanatec.
 
 export const fanatecDdSettings: Setting[] = [
   {
@@ -22,11 +22,10 @@ export const fanatecDdSettings: Setting[] = [
     decreaseEffect: "Fewer degrees — faster, more direct steering but can feel nervous.",
     sweetSpot: "Leave on AUTO unless a game ignores it; then match the car's real rotation.",
     warnings: ["Manually setting SEN while the game also sets rotation can double-scale your steering."],
-    unverified: true,
   },
   {
     id: "fanatec-dd-ff",
-    name: "Force Feedback Strength",
+    name: "Force Feedback",
     abbreviation: "FF",
     category: "wheel-base",
     subcategory: "force-feedback",
@@ -37,10 +36,9 @@ export const fanatecDdSettings: Setting[] = [
     valueType: { kind: "numeric", min: 0, max: 100, default: 100, unit: "%" },
     increaseEffect: "Heavier, stronger forces — more physical effort, more detail but more fatigue.",
     decreaseEffect: "Lighter wheel — easier to turn for long stints but you lose force detail.",
-    sweetSpot: "Most run 60–80 on the DD for road cars; lower if your forearms tire.",
+    sweetSpot: "Default is 100; many run 60–80 on the 15Nm DD for road cars to cut fatigue.",
     warnings: ["Too high clips the strongest forces, flattening detail (everything feels maxed)."],
     interactsWith: [{ settingId: "fanatec-dd-fei", relationship: "High FF can mask FEI sharpness." }],
-    unverified: true,
   },
   {
     id: "fanatec-dd-ndp",
@@ -51,13 +49,13 @@ export const fanatecDdSettings: Setting[] = [
     hardware: ["fanatec-dd"],
     platform: ["xbox"],
     location: { access: "on-wheel-tuning", path: "Tuning menu → NDP" },
-    description: "Adds weight/resistance to wheel movement, smoothing motion and calming oscillation.",
-    valueType: { kind: "numeric", min: 0, max: 100, default: 0, unit: "%" },
+    description:
+      "Damping that reacts to acceleration and steering angle — adds weight to wheel movement, smoothing motion and calming oscillation. Direct-drive bases only.",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
     increaseEffect: "Heavier, more planted wheel — kills oscillation but can dull fine feel.",
     decreaseEffect: "Freer, more reactive wheel — more detail but more prone to shake on straights.",
-    sweetSpot: "OFF–20 on a DD; the motor is strong enough that little damping is needed.",
+    sweetSpot: "Fanatec ships NDP at 50; many lower it to 10–30 on a DD for more detail.",
     interactsWith: [{ settingId: "fanatec-dd-nfr", relationship: "High NDP + NFR together feel heavy and numb." }],
-    unverified: true,
   },
   {
     id: "fanatec-dd-nfr",
@@ -68,12 +66,28 @@ export const fanatecDdSettings: Setting[] = [
     hardware: ["fanatec-dd"],
     platform: ["xbox"],
     location: { access: "on-wheel-tuning", path: "Tuning menu → NFR" },
-    description: "Simulates mechanical friction in the steering — a constant resistance to turning.",
+    description:
+      "Simulates mechanical friction in the steering — a constant resistance to turning. Direct-drive bases only. Default OFF.",
     valueType: { kind: "numeric", min: 0, max: 100, default: 0, unit: "%" },
     increaseEffect: "More static weight at all speeds — adds 'mechanical' feel but masks detail.",
     decreaseEffect: "Lighter, freer steering — more raw FFB detail comes through.",
     sweetSpot: "OFF–10 for most; keep low to preserve DD fidelity.",
-    unverified: true,
+  },
+  {
+    id: "fanatec-dd-nin",
+    name: "Natural Inertia",
+    abbreviation: "NIN",
+    category: "wheel-base",
+    subcategory: "force-feedback",
+    hardware: ["fanatec-dd"],
+    platform: ["xbox"],
+    location: { access: "on-wheel-tuning", path: "Tuning menu → NIN" },
+    description:
+      "Simulates additional weight/rotating mass on the steering axis. Direct-drive bases only. Default OFF.",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 0, unit: "%" },
+    increaseEffect: "Wheel carries more momentum — smoother direction changes but slower to react.",
+    decreaseEffect: "Lighter, more immediate wheel — quicker to change direction, less 'flywheel' feel.",
+    sweetSpot: "OFF for most; a little can settle a very light/fast rim.",
   },
   {
     id: "fanatec-dd-fei",
@@ -84,12 +98,11 @@ export const fanatecDdSettings: Setting[] = [
     hardware: ["fanatec-dd"],
     platform: ["xbox"],
     location: { access: "on-wheel-tuning", path: "Tuning menu → FEI" },
-    description: "Sharpness of FFB effects. Lower values smooth the signal; higher values are crisp and immediate.",
+    description: "Overall intensity of force effects. Lower values smooth the signal; higher values are crisp and immediate.",
     valueType: { kind: "numeric", min: 0, max: 100, default: 100, unit: "%" },
     increaseEffect: "Sharper, snappier effects — every bump and kerb is crisp (can feel notchy).",
     decreaseEffect: "Smoother, softer effects — gentler on the wrists, less harsh detail.",
-    sweetSpot: "80–100 on a DD; reduce only if effects feel harsh or grainy.",
-    unverified: true,
+    sweetSpot: "Default 100; reduce only if effects feel harsh or grainy.",
   },
   {
     id: "fanatec-dd-int",
@@ -100,11 +113,27 @@ export const fanatecDdSettings: Setting[] = [
     hardware: ["fanatec-dd"],
     platform: ["xbox"],
     location: { access: "on-wheel-tuning", path: "Tuning menu → INT" },
-    description: "Smooths between FFB signal updates. Higher = smoother but adds a touch of latency.",
-    valueType: { kind: "numeric", min: 0, max: 20, default: 0 },
+    description:
+      "Filters and smooths the incoming raw game FFB signal between updates. Higher = smoother but adds a touch of latency. 0 = OFF.",
+    valueType: { kind: "numeric", min: 0, max: 20, default: 6 },
     increaseEffect: "Smoother forces, less notchiness — at the cost of slight response delay.",
     decreaseEffect: "More immediate, raw forces — sharper but can feel stepped on lower-Hz games.",
-    sweetSpot: "OFF–2 on console; the DD signal is clean enough to need little interpolation.",
-    unverified: true,
+    sweetSpot: "Default 6; lower toward OFF on a clean DD signal if you want maximum immediacy.",
+  },
+  {
+    id: "fanatec-dd-lin",
+    name: "FFB Linearity",
+    abbreviation: "LIN",
+    category: "wheel-base",
+    subcategory: "force-feedback",
+    hardware: ["fanatec-dd"],
+    platform: ["xbox"],
+    location: { access: "on-wheel-tuning", path: "Tuning menu → LIN" },
+    description:
+      "Reduces FFB peaks to keep force output linear across the range. Direct-drive bases only. On/Off. Default OFF.",
+    valueType: { kind: "enum", options: ["OFF", "ON"], default: "OFF" },
+    increaseEffect: "ON — peaks are tamed, force scales evenly; calmer but less dramatic at the limit.",
+    decreaseEffect: "OFF — raw force curve with full peaks; punchier but can clip the strongest forces.",
+    sweetSpot: "Most leave OFF; turn ON if strong forces feel clipped/flat.",
   },
 ]

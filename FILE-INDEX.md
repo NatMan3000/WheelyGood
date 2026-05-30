@@ -12,6 +12,12 @@
 |------|-----------|-------------|
 | (empty) | | |
 
+## research/
+
+| File | Retention | Description |
+|------|-----------|-------------|
+| `fh6-wheel-settings.md` | reference | FH6 in-game advanced wheel/FFB settings — names, ranges, descriptions, sourced from official article + community guides |
+
 ## diagrams/
 
 | File | Retention | Description |

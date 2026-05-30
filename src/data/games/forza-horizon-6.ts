@@ -1,10 +1,19 @@
 import type { Setting } from "../../types"
 
-// ── SEED DATASET — Forza Horizon 6 in-game FFB & controls settings ────
-// DRAFT values authored by Kai based on FH5/FH6 series conventions.
-// Nathan to verify every setting name, slider range, and path against
-// the actual in-game menus before treating this as truth.
-// All settings flagged `unverified: true`.
+// ── Forza Horizon 6 — Advanced Controls (in-game) ─────────────────────
+// Setting NAMES verified against the official Forza Support article
+// "Forza Horizon 6 on Wheel: Advanced Wheel Tuning" (recovered via search,
+// cross-checked against 5 independent wheel-settings guides). See
+// research/fh6-wheel-settings.md.
+// Numeric RANGES/DEFAULTS are medium-confidence (the official article does
+// not publish them), so these stay `unverified: true` for value-checking —
+// but the setting names, descriptions, and existence are correct.
+// Menu path: Settings → Advanced Controls (wheel must be connected).
+// NOTE: "Force Feedback Understeer" does NOT exist in FH6 — understeer feel
+// comes from Mechanical Trail Scale + FFB Minimum Force.
+
+const ALL_HW: Setting["hardware"] = ["fanatec-dd", "fanatec-v25", "logitech-g920"]
+const ADVANCED = "Settings → Advanced Controls"
 
 export const forzaHorizon6Settings: Setting[] = [
   {
@@ -12,204 +21,71 @@ export const forzaHorizon6Settings: Setting[] = [
     name: "Force Feedback Scale",
     category: "in-game",
     subcategory: "force-feedback",
-    hardware: ["fanatec-dd", "fanatec-v25", "logitech-g920"],
+    hardware: ALL_HW,
     games: ["fh6"],
     platform: ["all"],
-    location: {
-      access: "in-game",
-      path: "Settings → Controls → Advanced Controls → Force Feedback Scale",
-    },
+    location: { access: "in-game", path: `${ADVANCED} → Force Feedback Scale` },
     description:
-      "Master volume for all force feedback output sent to the wheel. Scales every FFB force up or down proportionally. This is the primary dial to prevent clipping on a strong direct-drive base or to boost feel on a lighter gear-driven wheel.",
-    valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
-    increaseEffect:
-      "Stronger forces across the board — more physical feedback from road texture, kerbs, and chassis load.",
-    decreaseEffect:
-      "Weaker, lighter forces — easier on the arms for long sessions but less information from the road.",
-    sweetSpot:
-      "Fanatec DD: start around 40–55 to avoid clipping; Fanatec V2.5: 55–70; G920: 70–85. Confirm in-game — starting point only.",
-    warnings: [
-      "Setting too high clips the strongest forces, making everything feel the same at the limit.",
-      "Starting point — verify the correct slider name and range in-game.",
-    ],
+      "Master FFB strength — scales ALL forces sent to the wheel (spring, damper, road, everything). The single most important wheel setting.",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 100, unit: "%" },
+    increaseEffect: "Stronger overall forces — more weight and detail, but too high clips the signal and flattens fidelity.",
+    decreaseEffect: "Lighter overall forces — calmer wheel, less fatigue, but you can lose road feel.",
+    sweetSpot: "Start near default and back off until the strongest forces (kerb hits) stop feeling clipped/flat.",
+    warnings: ["Too high clips the signal and destroys fidelity — everything maxes out and detail disappears."],
     interactsWith: [
-      { settingId: "fh6-vibration-scale", relationship: "Both scale together; adjust FFB Scale first, then trim Vibration Scale separately." },
-      { settingId: "fh6-ffb-minimum-force", relationship: "Raising Minimum Force effectively raises the floor; FFB Scale sets the ceiling." },
-    ],
-    recommendations: [
-      { game: "fh6", setup: "xsx", value: 50, surface: "tarmac", notes: "Starting point on the ClubSport DD — dial down if wheel feels stiff or oscillates." },
-      { game: "fh6", setup: "xsx", value: 45, surface: "dirt", notes: "Slightly lower on dirt; surface noise can feel chaotic at higher values." },
-      { game: "fh6", setup: "xss", value: 65, surface: "tarmac", notes: "Belt-driven V2.5 benefits from higher scale to feel load transfer clearly." },
-      { game: "fh6", setup: "pc", value: 75, surface: "tarmac", notes: "G920 is a lower-torque wheel — push FFB Scale higher to feel road detail." },
+      { settingId: "fh6-ffb-load-sensitivity", relationship: "Lowering Load Sensitivity widens dynamic range when FFB Scale is pushed high." },
     ],
     unverified: true,
   },
   {
-    id: "fh6-vibration-scale",
-    name: "Vibration Scale",
+    id: "fh6-invert-ffb",
+    name: "Invert Force Feedback",
     category: "in-game",
     subcategory: "force-feedback",
-    hardware: ["fanatec-dd", "fanatec-v25", "logitech-g920"],
+    hardware: ALL_HW,
     games: ["fh6"],
     platform: ["all"],
-    location: {
-      access: "in-game",
-      path: "Settings → Controls → Advanced Controls → Vibration Scale",
-    },
-    description:
-      "Controls the intensity of high-frequency rumble effects — road texture, surface buzz, engine vibration, and wheel spin. Separate from the main steering forces.",
-    valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
-    increaseEffect:
-      "More buzz and texture through the wheel — road surface changes feel more distinct, rumble strips bite harder.",
-    decreaseEffect:
-      "Smoother, quieter wheel — less texture noise, which some drivers prefer for cleaner force feedback.",
-    sweetSpot:
-      "40–60 on most setups. Very high values can make the wheel feel artificially rough on smooth tarmac.",
-    warnings: [
-      "On CSP V3 pedals with vibration motors, this setting may also influence pedal rumble — confirm in-game.",
-      "Starting point — verify slider name in-game.",
-    ],
-    interactsWith: [
-      { settingId: "fh6-ffb-scale", relationship: "FFB Scale is the master; Vibration Scale is a sub-level for texture/rumble specifically." },
-    ],
-    recommendations: [
-      { game: "fh6", setup: "xsx", value: 50, surface: "tarmac", notes: "Balanced starting point on DD." },
-      { game: "fh6", setup: "xsx", value: 60, surface: "dirt", notes: "Higher on dirt — surface texture is a key cue for grip on loose surfaces." },
-      { game: "fh6", setup: "xsx", value: 55, surface: "snow", notes: "Moderate — snow is inherently slippery; vibration helps feel the loose surface." },
-      { game: "fh6", setup: "pc", value: 65, surface: "tarmac", notes: "G920 benefits from higher vibration scale to compensate for lower peak torque." },
-    ],
+    location: { access: "in-game", path: `${ADVANCED} → Invert Force Feedback` },
+    description: "Reverses FFB direction. Only needed if the wheel pulls INTO your turn instead of resisting it.",
+    valueType: { kind: "enum", options: ["OFF", "ON"], default: "OFF" },
+    increaseEffect: "ON — flips force direction. Correct setting for a wheel that self-steers the wrong way.",
+    decreaseEffect: "OFF — normal direction (correct for almost all wheels).",
+    sweetSpot: "OFF unless your wheel clearly fights the wrong way.",
     unverified: true,
   },
   {
-    id: "fh6-steering-sensitivity",
-    name: "Steering Sensitivity",
-    category: "in-game",
-    subcategory: "steering",
-    hardware: ["fanatec-dd", "fanatec-v25", "logitech-g920"],
-    games: ["fh6"],
-    platform: ["all"],
-    location: {
-      access: "in-game",
-      path: "Settings → Controls → Advanced Controls → Steering Sensitivity",
-    },
-    description:
-      "Adjusts how much virtual steering angle is applied relative to physical wheel input — a sensitivity curve modifier. Does not change total lock-to-lock rotation but affects how quickly the car responds near centre.",
-    valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
-    increaseEffect:
-      "More responsive steering near centre — the car reacts faster per degree of input, which can feel twitchy.",
-    decreaseEffect:
-      "Calmer, more progressive steering — requires more physical rotation for the same virtual angle, more forgiving for beginners.",
-    sweetSpot:
-      "50 is a reasonable neutral starting point. Direct-drive users often prefer 40–50; lower-end wheels may want 50–60 to feel more connected.",
-    warnings: [
-      "Not the same as steering deadzone — this is a curve shaper, not a dead-band.",
-      "Starting point — verify slider name and behaviour in-game.",
-    ],
-    interactsWith: [
-      { settingId: "fh6-steering-linearity", relationship: "Works in tandem — Sensitivity affects near-centre response, Linearity shapes the full arc." },
-      { settingId: "fh6-centre-steering-deadzone", relationship: "Set deadzone first to eliminate hardware slop, then tune Sensitivity for feel." },
-    ],
-    recommendations: [
-      { game: "fh6", setup: "xsx", value: 45, surface: "tarmac", notes: "Slightly below mid on the responsive DD base." },
-      { game: "fh6", setup: "xss", value: 50, surface: "tarmac", notes: "Neutral starting point for belt-driven base." },
-      { game: "fh6", setup: "pc", value: 55, surface: "tarmac", notes: "Marginally above mid to compensate for G920's lower fidelity near centre." },
-    ],
-    unverified: true,
-  },
-  {
-    id: "fh6-centre-steering-deadzone",
-    name: "Center Steering Deadzone",
-    category: "in-game",
-    subcategory: "steering",
-    hardware: ["fanatec-dd", "fanatec-v25", "logitech-g920"],
-    games: ["fh6"],
-    platform: ["all"],
-    location: {
-      access: "in-game",
-      path: "Settings → Controls → Advanced Controls → Center Steering Deadzone",
-    },
-    description:
-      "Creates a dead zone around the wheel's centre point where no steering input is registered. Eliminates drift caused by hardware imprecision or centering spring slop.",
-    valueType: { kind: "numeric", min: 0, max: 100, default: 0, unit: "%" },
-    increaseEffect:
-      "Wider dead band at centre — car stays straight more easily but the wheel feels numb around straight-ahead.",
-    decreaseEffect:
-      "Tighter, more immediate response — any tiny movement registers as steering input.",
-    sweetSpot:
-      "0–5 on a quality direct-drive or belt-drive base. Only raise if the car visibly wanders on a straight road with hands off the wheel.",
-    warnings: [
-      "Too high makes straight-line driving feel detached and masks subtle understeer feedback.",
-      "Verify the exact slider name in-game — some Forza titles call this 'Deadzone Inside'.",
-    ],
-    unverified: true,
-  },
-  {
-    id: "fh6-steering-linearity",
-    name: "Steering Linearity",
-    category: "in-game",
-    subcategory: "steering",
-    hardware: ["fanatec-dd", "fanatec-v25", "logitech-g920"],
-    games: ["fh6"],
-    platform: ["all"],
-    location: {
-      access: "in-game",
-      path: "Settings → Controls → Advanced Controls → Steering Linearity",
-    },
-    description:
-      "Shapes the response curve across the full steering arc. At 50 the response is linear; higher values add an exponential feel (more rotation needed to reach full lock); lower values make the curve more aggressive.",
-    valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
-    increaseEffect:
-      "More exponential curve — small inputs near centre feel more subtle, big inputs towards lock feel progressively stronger.",
-    decreaseEffect:
-      "More aggressive curve — every degree of rotation has significant effect, making the car feel darty.",
-    sweetSpot:
-      "50 is the neutral/linear point. Wheel users typically don't need to move far from 50; small adjustments (±5–10) if the car feels over/under-responsive at the limit.",
-    warnings: [
-      "This setting is more impactful for controller users; wheel users at 900° SEN often need minimal adjustment.",
-      "Confirm slider name and direction in-game — starting point only.",
-    ],
-    interactsWith: [
-      { settingId: "fh6-steering-sensitivity", relationship: "Sensitivity shapes near-centre feel; Linearity shapes the full arc." },
-    ],
-    recommendations: [
-      { game: "fh6", setup: "xsx", value: 50, surface: "tarmac", notes: "Leave at neutral — the DD's full rotation already provides natural linearity." },
-      { game: "fh6", setup: "pc", value: 50, surface: "tarmac", notes: "Neutral starting point; G920 at 900° provides natural linearity through rotation." },
-    ],
-    unverified: true,
-  },
-  {
-    id: "fh6-ffb-understeer",
-    name: "Force Feedback Understeer",
+    id: "fh6-center-spring-scale",
+    name: "Center Spring Scale",
     category: "in-game",
     subcategory: "force-feedback",
-    hardware: ["fanatec-dd", "fanatec-v25", "logitech-g920"],
+    hardware: ALL_HW,
     games: ["fh6"],
     platform: ["all"],
-    location: {
-      access: "in-game",
-      path: "Settings → Controls → Advanced Controls → Force Feedback Understeer",
-    },
+    location: { access: "in-game", path: `${ADVANCED} → Center Spring Scale` },
     description:
-      "Controls whether the wheel lightens off (goes light) to communicate front-axle understeer. When the front tyres lose grip and wash wide, some drivers want the wheel to go noticeably light as a warning signal.",
-    valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
-    increaseEffect:
-      "More pronounced wheel lightening during understeer — the car's push feels clearly communicated through reduced resistance.",
-    decreaseEffect:
-      "Less wheel lightening — understeer is less obvious through the wheel; other cues (visuals, sound) become more important.",
-    sweetSpot:
-      "50–70 for most drivers — enough to feel the front washing without the wheel going completely dead.",
-    warnings: [
-      "This setting may not be present in all Forza Horizon titles or may appear under a different label. Verify in-game.",
-      "Very high values can make the wheel feel alarmingly dead at the limit.",
-    ],
-    interactsWith: [
-      { settingId: "fh6-ffb-minimum-force", relationship: "Minimum Force sets a floor — understeer lightening may not be fully felt if Minimum Force is too high." },
-    ],
-    recommendations: [
-      { game: "fh6", setup: "xsx", value: 60, surface: "tarmac", notes: "On the responsive DD, this is a clear and useful feedback cue." },
-      { game: "fh6", setup: "xsx", value: 50, surface: "dirt", notes: "Moderate — on dirt, understeer is frequent and expected; too much lightening becomes constant." },
-      { game: "fh6", setup: "pc", value: 65, surface: "tarmac", notes: "Slightly higher on the G920 to ensure the lightening is noticeable through the lower-torque base." },
-    ],
+      "Dynamic self-centering force (caster, KPI, scrub radius). Ramps DOWN with speed and cornering load so real tyre-feel takes over when you're driving hard.",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 100, unit: "%" },
+    increaseEffect: "Stronger centering — wheel returns to centre harder, but high values mask tyre feel.",
+    decreaseEffect: "Weaker centering — more raw tyre feel, but too low lets the wheel oscillate at centre.",
+    sweetSpot: "Enough to stop centre oscillation without burying tyre feel.",
+    warnings: ["Too low causes oscillation around centre; too high masks what the front tyres are doing."],
+    unverified: true,
+  },
+  {
+    id: "fh6-mechanical-trail-scale",
+    name: "Mechanical Trail Scale",
+    category: "in-game",
+    subcategory: "force-feedback",
+    hardware: ALL_HW,
+    games: ["fh6"],
+    platform: ["all"],
+    location: { access: "in-game", path: `${ADVANCED} → Mechanical Trail Scale` },
+    description:
+      "Scales the strong, smooth 'follow the direction of travel' force. Controls how LIGHT the wheel goes during understeer — the main understeer cue.",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 100, unit: "%" },
+    increaseEffect: "More 'follow' force — great for drifting/control, but high values mask the lightening that signals understeer/lockup.",
+    decreaseEffect: "Less follow force — understeer comes through more clearly as the wheel going light.",
+    sweetSpot: "Lower it if you can't feel the front washing out; raise it for drift stability.",
     unverified: true,
   },
   {
@@ -217,35 +93,152 @@ export const forzaHorizon6Settings: Setting[] = [
     name: "Force Feedback Minimum Force",
     category: "in-game",
     subcategory: "force-feedback",
-    hardware: ["fanatec-dd", "fanatec-v25", "logitech-g920"],
+    hardware: ALL_HW,
     games: ["fh6"],
     platform: ["all"],
-    location: {
-      access: "in-game",
-      path: "Settings → Controls → Advanced Controls → Force Feedback Minimum Force",
-    },
+    location: { access: "in-game", path: `${ADVANCED} → Force Feedback Minimum Force` },
     description:
-      "Sets a floor on force feedback output. Prevents the wheel from going completely dead at low speed or during understeer by ensuring a minimum level of resistance is always present.",
-    valueType: { kind: "numeric", min: 0, max: 100, default: 0, unit: "%" },
-    increaseEffect:
-      "Higher constant baseline resistance — wheel never goes truly light, which can improve feel on slower corners or in low-grip conditions.",
-    decreaseEffect:
-      "Wheel can go very light or dead — more dynamic range of feedback from heavy load to near-zero.",
-    sweetSpot:
-      "5–15 for most setups. Fanatec DD users often run 0–10; G920 users may benefit from 10–20 to reduce motor deadband feel.",
-    warnings: [
-      "Setting too high masks useful feedback — you lose the lightening feel that signals understeer.",
-      "Verify slider exists and confirm name in-game — may not be present in all Forza Horizon builds.",
-    ],
-    interactsWith: [
-      { settingId: "fh6-ffb-scale", relationship: "FFB Scale is the ceiling; Minimum Force is the floor — together they define the feedback dynamic range." },
-      { settingId: "fh6-ffb-understeer", relationship: "High Minimum Force can suppress the understeer lightening effect." },
-    ],
+      "Despite the name, this scales PNEUMATIC TRAIL — the dynamic lever-arm from tyre deformation that drops as the tyre slips, giving you onset-of-understeer / lockup feel.",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
+    increaseEffect: "Stronger slip/limit cue — clearer feel for the traction edge, but can get peaky right at the limit.",
+    decreaseEffect: "Smoother at the limit — less peaky, but the onset-of-slip cue gets quieter.",
+    sweetSpot: "Enough to feel the traction limit clearly without harsh peaks at the edge of grip.",
+    unverified: true,
+  },
+  {
+    id: "fh6-ffb-load-sensitivity",
+    name: "Force Feedback Load Sensitivity",
+    category: "in-game",
+    subcategory: "force-feedback",
+    hardware: ALL_HW,
+    games: ["fh6"],
+    platform: ["all"],
+    location: { access: "in-game", path: `${ADVANCED} → Force Feedback Load Sensitivity` },
+    description:
+      "Scales medium-frequency forces from road elevation, oscillations and bounces. Lower values are smoother and also effectively widen the FFB dynamic range when FFB Scale is high.",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
+    increaseEffect: "More mid-frequency movement — busier, more 'alive' wheel over undulating road.",
+    decreaseEffect: "Smoother wheel — calmer over bumps, and headroom for a higher FFB Scale.",
+    sweetSpot: "Lower it if the wheel feels noisy/busy or if you're running a high FFB Scale.",
+    unverified: true,
+  },
+  {
+    id: "fh6-road-feel-scale",
+    name: "Road Feel Scale",
+    category: "in-game",
+    subcategory: "force-feedback",
+    hardware: ALL_HW,
+    games: ["fh6"],
+    platform: ["all"],
+    location: { access: "in-game", path: `${ADVANCED} → Road Feel Scale` },
+    description:
+      "Scales high-frequency surface texture and bumps. Amplifies fine road detail WITHOUT touching the low-frequency cornering forces.",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
+    increaseEffect: "More surface texture and bump detail through the wheel.",
+    decreaseEffect: "Smoother, less buzzy wheel — cornering forces unchanged.",
+    sweetSpot: "To taste — raise for more tarmac texture, lower if it feels gritty/noisy.",
+    unverified: true,
+  },
+  {
+    id: "fh6-offroad-feel-scale",
+    name: "Off-Road Feel Scale",
+    category: "in-game",
+    subcategory: "force-feedback",
+    hardware: ALL_HW,
+    games: ["fh6"],
+    platform: ["all"],
+    location: { access: "in-game", path: `${ADVANCED} → Off-Road Feel Scale` },
+    description: "Like Road Feel Scale, but applies on non-tarmac surfaces (dirt, gravel, grass, snow).",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
+    increaseEffect: "More violent off-road texture — strong rumble on dirt/gravel.",
+    decreaseEffect: "Calmer off-road — less wrist-beating on rough surfaces.",
+    sweetSpot: "Lower than Road Feel if off-road gets too harsh on mixed-surface events.",
     recommendations: [
-      { game: "fh6", setup: "xsx", value: 5, surface: "tarmac", notes: "Small floor to keep some feel at low speed without masking load transfer." },
-      { game: "fh6", setup: "xss", value: 10, surface: "tarmac", notes: "Slightly higher on the belt-driven base to overcome any motor deadband." },
-      { game: "fh6", setup: "pc", value: 15, surface: "tarmac", notes: "G920 benefits from a higher floor to ensure consistent FFB feel." },
+      { game: "fh6", setup: "xsx", surface: "dirt", value: 35, notes: "Tame off-road harshness on long rally stints." },
+      { game: "fh6", setup: "xsx", surface: "tarmac", value: 50, notes: "Default-ish — off-road rarely triggers on tarmac events." },
     ],
+    unverified: true,
+  },
+  {
+    id: "fh6-vibration-scale",
+    name: "Vibration Scale",
+    category: "in-game",
+    subcategory: "vibration",
+    hardware: ALL_HW,
+    games: ["fh6"],
+    platform: ["all"],
+    location: { access: "in-game", path: `${ADVANCED} → Vibration Scale` },
+    description:
+      "Intensity of tactile signals like tyre overuse and collisions. Distinct from Road Feel — turning this DOWN does not reduce the physical FFB cornering forces.",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
+    increaseEffect: "Stronger buzz signals for tyre wear/collisions.",
+    decreaseEffect: "Quieter tactile signals — FFB forces unaffected.",
+    sweetSpot: "To taste; reduce if vibration feels gimmicky.",
+    unverified: true,
+  },
+  {
+    id: "fh6-steering-sensitivity",
+    name: "Steering Sensitivity",
+    category: "in-game",
+    subcategory: "steering",
+    hardware: ALL_HW,
+    games: ["fh6"],
+    platform: ["all"],
+    location: { access: "in-game", path: `${ADVANCED} → Steering Sensitivity` },
+    description:
+      "Changes the steering RATIO — higher is more responsive (shorter effective ratio). This is a 0.0–1.0 scale, and it does NOT create a soft lock (the wheel still over-rotates past car lock).",
+    valueType: { kind: "numeric", min: 0, max: 1, step: 0.05, default: 0.5 },
+    increaseEffect: "Quicker, more responsive steering — less wheel movement to turn the car.",
+    decreaseEffect: "Slower, calmer steering ratio — more wheel movement for the same turn.",
+    sweetSpot: "0.5 is neutral; nudge down for a more natural feel with high physical rotation.",
+    unverified: true,
+  },
+  {
+    id: "fh6-steering-linearity",
+    name: "Steering Linearity",
+    category: "in-game",
+    subcategory: "steering",
+    hardware: ALL_HW,
+    games: ["fh6"],
+    platform: ["all"],
+    location: { access: "in-game", path: `${ADVANCED} → Steering Linearity` },
+    description: "Shapes the steering response curve. 50 = linear. Below 50 = more precision near centre. Above 50 = more precision near full lock.",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 50 },
+    increaseEffect: "Above 50 — more precision near lock, twitchier near centre.",
+    decreaseEffect: "Below 50 — more precision near centre, calmer small inputs.",
+    sweetSpot: "50 (linear) for a 1:1 feel; most wheel users leave it here.",
+    unverified: true,
+  },
+  {
+    id: "fh6-steering-rotation",
+    name: "Steering Rotation",
+    category: "in-game",
+    subcategory: "steering",
+    hardware: ALL_HW,
+    games: ["fh6"],
+    platform: ["all"],
+    location: { access: "in-game", path: `${ADVANCED} → Steering Rotation` },
+    description: "Degrees of physical rotation mapped to full lock-to-lock.",
+    valueType: { kind: "numeric", min: 360, max: 1080, default: 900, unit: "°" },
+    increaseEffect: "More rotation — slower, more realistic arc; better for road racing.",
+    decreaseEffect: "Less rotation — faster steering; ~540° suits drifting.",
+    sweetSpot: "720–900° for road racing; ~540° for drifting.",
+    unverified: true,
+  },
+  {
+    id: "fh6-steering-deadzone-inside",
+    name: "Steering Axis Deadzone Inside",
+    category: "in-game",
+    subcategory: "deadzone",
+    hardware: ALL_HW,
+    games: ["fh6"],
+    platform: ["all"],
+    location: { access: "in-game", path: `${ADVANCED} → Steering Axis Deadzone Inside` },
+    description: "Dead band around centre before steering input registers. Raise only if the car turns slightly while the wheel is at rest.",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 0 },
+    increaseEffect: "More wheel movement needed before the car responds — kills a twitchy/drifting centre.",
+    decreaseEffect: "More immediate response off-centre — but a noisy axis may self-steer.",
+    sweetSpot: "0 for a healthy wheel; raise a few points only to cure centre drift.",
     unverified: true,
   },
 ]
