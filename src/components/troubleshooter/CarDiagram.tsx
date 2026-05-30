@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react"
 import type { CarArea } from "../../types"
 
 const AREAS: { id: CarArea; label: string }[] = [
@@ -14,38 +13,52 @@ interface Props {
   onSelectArea: (area: CarArea) => void
 }
 
-// Hybrid diagram: grayscale top-down car photo (public/car-topdown.png) as the
-// base, with a theme-aware SVG overlay (viewBox 0–100) whose zones TRACE the
-// real components — four wheels for brakes, the rack + centre crosshair for
-// steering, the body halves for front/rear. Glow uses var(--accent) so it
-// follows the active theme. Coordinates mapped to the car's position.
+// Baked-image diagram: a grayscale base plus one pre-rendered lime-glow image
+// per zone (public/car-{base,front,rear,steering,brakes,overall}.png — same car,
+// pixel-aligned). The active zone's image crossfades in over the base. A
+// transparent SVG hit-map handles taps (coordinates measured against the image).
+//
+// NOTE: the glow colour is baked into these images (lime). Unlike the SVG
+// overlay, this does NOT follow the accent theme — the car always glows lime.
+// Chosen deliberately for the richer rendered look.
+
+const ZONE_IMAGES: { area: CarArea; src: string }[] = [
+  { area: "front", src: "/car-front.png" },
+  { area: "rear", src: "/car-rear.png" },
+  { area: "steering", src: "/car-steering.png" },
+  { area: "brakes", src: "/car-brakes.png" },
+  { area: "overall", src: "/car-overall.png" },
+]
 
 export default function CarDiagram({ activeArea, onSelectArea }: Props) {
-  // Style for an active vs idle zone. `traced` zones (wheels/rack/crosshair)
-  // lean on stroke + glow; body zones get a soft fill too.
-  const zoneStyle = (area: CarArea, filled: boolean): CSSProperties => {
-    const active = activeArea === area
-    return {
-      fill: active && filled ? "var(--accent)" : "transparent",
-      fillOpacity: active && filled ? 0.16 : 0,
-      stroke: active ? "var(--accent)" : "transparent",
-      strokeWidth: 1.4,
-      filter: active ? "drop-shadow(0 0 4px var(--accent)) drop-shadow(0 0 8px var(--accent))" : "none",
-      pointerEvents: "all",
-      cursor: "pointer",
-      transition: "fill-opacity 150ms ease, stroke 150ms ease, filter 150ms ease",
-    }
-  }
+  const hit = (area: CarArea) => ({
+    onClick: () => onSelectArea(area),
+    style: { fill: "transparent", pointerEvents: "all" as const, cursor: "pointer" },
+  })
 
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative w-full max-w-[340px] aspect-square">
+        {/* Grayscale base (always shown) */}
         <img
-          src="/car-topdown.png"
+          src="/car-base.png"
           alt="Top-down view of a car — tap an area"
-          className="absolute inset-0 h-full w-full object-contain pointer-events-none select-none"
+          className="absolute inset-0 h-full w-full object-contain select-none"
           draggable={false}
         />
+        {/* Pre-rendered glow images, crossfaded in when their zone is active */}
+        {ZONE_IMAGES.map(({ area, src }) => (
+          <img
+            key={area}
+            src={src}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full object-contain select-none transition-opacity duration-200"
+            style={{ opacity: activeArea === area ? 1 : 0 }}
+            draggable={false}
+          />
+        ))}
+        {/* Transparent hit-map for taps (measured to the car's wheels/body) */}
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
@@ -53,7 +66,7 @@ export default function CarDiagram({ activeArea, onSelectArea }: Props) {
           role="group"
           aria-label="Car area selector"
         >
-          {/* Overall — dashed ring tracing the car perimeter (stroke only) */}
+          {/* Overall — dashed ring perimeter (stroke clickable) */}
           <rect
             x={31}
             y={14}
@@ -61,60 +74,18 @@ export default function CarDiagram({ activeArea, onSelectArea }: Props) {
             height={73}
             rx={14}
             onClick={() => onSelectArea("overall")}
-            style={{
-              fill: "transparent",
-              stroke: activeArea === "overall" ? "var(--accent)" : "transparent",
-              strokeWidth: 1.6,
-              strokeDasharray: "3 2",
-              filter:
-                activeArea === "overall"
-                  ? "drop-shadow(0 0 4px var(--accent)) drop-shadow(0 0 8px var(--accent))"
-                  : "none",
-              pointerEvents: "stroke",
-              cursor: "pointer",
-              transition: "stroke 150ms ease, filter 150ms ease",
-            }}
+            style={{ fill: "transparent", stroke: "transparent", strokeWidth: 4, pointerEvents: "stroke", cursor: "pointer" }}
           />
-
-          {/* Front body half */}
-          <rect
-            x={39}
-            y={16}
-            width={22}
-            height={31}
-            rx={6}
-            onClick={() => onSelectArea("front")}
-            style={zoneStyle("front", true)}
-          />
-
-          {/* Rear body half */}
-          <rect
-            x={39}
-            y={50}
-            width={22}
-            height={36}
-            rx={6}
-            onClick={() => onSelectArea("rear")}
-            style={zoneStyle("rear", true)}
-          />
-
-          {/* Brakes — trace the four wheels (inner edges at x40/x60 per the rack) */}
-          <g onClick={() => onSelectArea("brakes")} style={zoneStyle("brakes", true)}>
+          <rect x={39} y={16} width={22} height={31} rx={6} {...hit("front")} />
+          <rect x={39} y={50} width={22} height={36} rx={6} {...hit("rear")} />
+          <g {...hit("brakes")}>
             <rect x={31} y={15} width={9} height={13} rx={3} />
             <rect x={60} y={15} width={9} height={13} rx={3} />
             <rect x={31} y={62} width={9} height={13} rx={3} />
             <rect x={60} y={62} width={9} height={13} rx={3} />
           </g>
-
-          {/* Steering — trace the rack + centre crosshair (drawn last → wins centre clicks) */}
-          <g onClick={() => onSelectArea("steering")} style={zoneStyle("steering", true)}>
-            {/* steering rack across the front axle, between the wheel inner edges */}
-            <rect x={40} y={21} width={20} height={3.6} rx={1.8} />
-            {/* centre crosshair ring */}
-            <circle cx={50} cy={49} r={6} style={{ fill: "transparent" }} />
-            <line x1={50} y1={44} x2={50} y2={54} strokeWidth={1} />
-            <line x1={45} y1={49} x2={55} y2={49} strokeWidth={1} />
-          </g>
+          {/* Steering — centre, drawn last → wins centre clicks */}
+          <circle cx={50} cy={49} r={9} {...hit("steering")} />
         </svg>
       </div>
 
