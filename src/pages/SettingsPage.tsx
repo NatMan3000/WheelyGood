@@ -4,6 +4,8 @@ import { useGame } from "../hooks/useGame"
 import { setups } from "../data/setups"
 import { themes } from "../data/themes"
 import { games } from "../data/settings"
+import GameLogo from "../components/shared/GameLogo"
+import SetupLogo from "../components/shared/SetupLogo"
 import type { SetupId } from "../types"
 
 export default function SettingsPage() {
@@ -32,10 +34,8 @@ export default function SettingsPage() {
                 ].join(" ")}
               >
                 <div className="flex items-center gap-2 mb-2">
+                  <SetupLogo setupId={s.id as SetupId} className="h-7 w-7" />
                   <span className="font-medium text-white">{s.name}</span>
-                  <span className="text-xs text-neutral-400 bg-neutral-800 rounded px-2 py-0.5">
-                    {s.shortName}
-                  </span>
                 </div>
                 <ul className="space-y-0.5">
                   {s.components.map((c) => (
@@ -64,12 +64,13 @@ export default function SettingsPage() {
                 type="button"
                 onClick={() => setGameId(g.id)}
                 className={[
-                  "rounded-lg px-4 min-h-[44px] text-sm transition-colors duration-150",
+                  "flex items-center gap-3 rounded-lg px-4 py-3 min-h-[44px] text-sm transition-colors duration-150",
                   isSelected
-                    ? "bg-accent text-black font-medium"
-                    : "border border-neutral-700 text-neutral-300 hover:border-accent",
+                    ? "bg-neutral-900 border border-accent text-white font-medium"
+                    : "bg-neutral-900 border border-neutral-800 text-neutral-300 hover:border-accent",
                 ].join(" ")}
               >
+                <GameLogo gameId={g.id} className="h-8 w-8" />
                 {g.name}
               </button>
             )

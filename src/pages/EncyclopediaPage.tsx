@@ -3,10 +3,12 @@ import { useSetup } from "../hooks/useSetup"
 import { useGame } from "../hooks/useGame"
 import { settingsForContext } from "../data/settings"
 import SettingsList from "../components/encyclopedia/SettingsList"
+import GameLogo from "../components/shared/GameLogo"
+import SetupLogo from "../components/shared/SetupLogo"
 
 export default function EncyclopediaPage() {
-  const { setupId, setup } = useSetup()
-  const { gameId, game } = useGame()
+  const { setupId } = useSetup()
+  const { gameId } = useGame()
   const [query, setQuery] = useState("")
 
   const baseSettings = settingsForContext(setupId, gameId)
@@ -25,12 +27,8 @@ export default function EncyclopediaPage() {
     <div className="px-4 py-4">
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-bold text-white">Encyclopedia</h1>
-        <span className="bg-accent text-black rounded-full px-2 py-0.5 text-xs">
-          {setup.shortName}
-        </span>
-        <span className="bg-sky-500/15 text-sky-300 border border-sky-500/40 rounded-full px-2 py-0.5 text-xs">
-          {game.name}
-        </span>
+        <SetupLogo setupId={setupId} className="h-7 w-7" />
+        <GameLogo gameId={gameId} className="h-7 w-7" />
       </div>
 
       <input
