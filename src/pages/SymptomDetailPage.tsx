@@ -1,10 +1,14 @@
+import { useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { symptomById } from "../data/symptoms/symptoms"
 import { settingById } from "../data/settings"
+import { useSetup } from "../hooks/useSetup"
 
 export default function SymptomDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { setup } = useSetup()
+  const [showAll, setShowAll] = useState(false)
   const symptom = id ? symptomById(id) : undefined
 
   if (!symptom) {
@@ -18,7 +22,14 @@ export default function SymptomDetailPage() {
     )
   }
 
+  const setupHardware = new Set(setup.components.map((c) => c.id))
   const sortedFixes = [...symptom.fixes].sort((a, b) => a.priority - b.priority)
+  // A fix applies if it has no hardware constraint, or its hardware overlaps the active setup.
+  const setupFixes = sortedFixes.filter(
+    (f) => !f.hardware || f.hardware.some((h) => setupHardware.has(h)),
+  )
+  const visibleFixes = showAll ? sortedFixes : setupFixes
+  const hiddenCount = sortedFixes.length - setupFixes.length
 
   return (
     <div className="min-h-svh bg-neutral-950 text-white">
@@ -49,10 +60,30 @@ export default function SymptomDetailPage() {
         {/* Fixes */}
         {sortedFixes.length > 0 && (
           <div className="space-y-3">
-            <h2 className="text-sm font-medium text-neutral-300">
-              Try these fixes, in order
-            </h2>
-            {sortedFixes.map((fix) => (
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <h2 className="text-sm font-medium text-neutral-300">
+                Try these fixes, in order
+              </h2>
+              {hiddenCount > 0 && (
+                <button
+                  onClick={() => setShowAll((v) => !v)}
+                  className="text-xs text-neutral-400 hover:text-accent transition-colors duration-150"
+                >
+                  {showAll
+                    ? `Showing all setups · filter to ${setup.shortName}`
+                    : `Showing ${setup.shortName} · show all setups (+${hiddenCount})`}
+                </button>
+              )}
+            </div>
+            {visibleFixes.length === 0 && (
+              <p className="text-sm text-neutral-500">
+                No fixes specific to your {setup.shortName}.{" "}
+                <button onClick={() => setShowAll(true)} className="text-accent">
+                  Show all setups
+                </button>
+              </p>
+            )}
+            {visibleFixes.map((fix) => (
               <div
                 key={`${fix.settingId}-${fix.priority}`}
                 className="rounded-lg bg-neutral-900 border border-neutral-800 p-3 space-y-1.5"
