@@ -23,3 +23,48 @@ body {
 #root {
   min-height: 100svh;
 }
+
+/* ── Motion: card hover lift ─────────────────────────────────────────────── */
+
+.card-hover {
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+/* ── Motion: detail sheet slide-up / fade-in on mount ───────────────────── */
+
+@keyframes sheet-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sheet-enter {
+  animation: sheet-enter 180ms ease both;
+}
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card-hover,
+  .card-hover:hover {
+    transform: none;
+    box-shadow: none;
+    transition: border-color 150ms ease;
+  }
+
+  .sheet-enter {
+    animation: none;
+  }
+}

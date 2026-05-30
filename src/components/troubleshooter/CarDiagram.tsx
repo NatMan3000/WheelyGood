@@ -14,141 +14,271 @@ interface Props {
   onSelectArea: (area: CarArea) => void
 }
 
+// viewBox: 200 × 340
+// Car body: centred, nose-up (front at top)
+// Body polygon: slightly tapered nose, rounded rect main body
+// Wheels: rounded rects, sitting outside the body at each corner
+// Zones: front / rear / steering (centre) / brakes (overlaid on wheel areas) / overall (dashed ring)
+
+const ACCENT = "var(--accent)"
+const INACTIVE_FILL = "#1f1f1f"
+const INACTIVE_STROKE = "#404040"
+const BODY_BG = "#141414"
+const BODY_STROKE = "#2d2d2d"
+
 export default function CarDiagram({ activeArea, onSelectArea }: Props) {
   const isActive = (area: CarArea) => activeArea === area
 
-  const zoneBase =
-    "cursor-pointer transition-colors duration-150"
-
-  // Stroke colour helper — returns inline style values
-  function zoneStyle(area: CarArea): CSSProperties {
+  function zoneFill(area: CarArea): CSSProperties {
     return isActive(area)
-      ? { fill: "var(--accent)", fillOpacity: 0.18, stroke: "var(--accent)", strokeWidth: 2 }
-      : { fill: "#262626", fillOpacity: 1, stroke: "#525252", strokeWidth: 1.5 }
+      ? {
+          fill: ACCENT,
+          fillOpacity: 0.15,
+          stroke: ACCENT,
+          strokeWidth: 2,
+        }
+      : {
+          fill: INACTIVE_FILL,
+          fillOpacity: 1,
+          stroke: INACTIVE_STROKE,
+          strokeWidth: 1.5,
+        }
   }
 
-  function labelStyle(area: CarArea): CSSProperties {
-    return isActive(area) ? { fill: "var(--accent)", fontWeight: 700 } : { fill: "#a3a3a3" }
+  function labelFill(area: CarArea): string {
+    return isActive(area) ? ACCENT : "#888"
   }
+
+  function labelWeight(area: CarArea): string {
+    return isActive(area) ? "700" : "400"
+  }
+
+  // Wheel geometry: 4 corners
+  // Front-left, Front-right, Rear-left, Rear-right
+  // Wheels are 26×46 rounded rects sitting outside the body at x=14 / x=160
+  const wheelW = 26
+  const wheelH = 44
+  const wheelRx = 7
+  const wheelLx = 14   // left column x
+  const wheelRx2 = 160 // right column x
+  const wheelFrontY = 64  // front axle top
+  const wheelRearY = 220  // rear axle top
 
   return (
     <div className="flex flex-col items-center gap-4">
-      {/* SVG car diagram — portrait, viewBox 200×320 */}
+      {/* SVG car diagram */}
       <svg
-        viewBox="0 0 200 320"
-        className="w-full max-w-[240px]"
+        viewBox="0 0 200 340"
+        className="w-full max-w-[220px]"
         aria-label="Car diagram — tap a zone to filter symptoms"
         role="img"
       >
-        {/* ── Car body outline (decorative, not tappable) ── */}
+        {/* ── Static car body (background, non-interactive) ── */}
+        {/* Main body — rounded rect */}
         <rect
-          x="42" y="50" width="116" height="220"
-          rx="28" ry="28"
-          fill="#171717" stroke="#3f3f46" strokeWidth="1.5"
+          x="44" y="52" width="112" height="232"
+          rx="22" ry="22"
+          fill={BODY_BG}
+          stroke={BODY_STROKE}
+          strokeWidth="1.5"
+        />
+        {/* Nose taper overlay — narrows the front end */}
+        <polygon
+          points="44,74 56,52 144,52 156,74"
+          fill={BODY_BG}
+          stroke="none"
+        />
+        {/* Windscreen line */}
+        <line
+          x1="58" y1="100" x2="142" y2="100"
+          stroke="#2a2a2a" strokeWidth="6" strokeLinecap="round"
+        />
+        {/* Rear screen line */}
+        <line
+          x1="58" y1="236" x2="142" y2="236"
+          stroke="#2a2a2a" strokeWidth="5" strokeLinecap="round"
         />
 
-        {/* ── Front zone (front third + front wheels band) ── */}
+        {/* ── Front zone ─────────────────────────────────────────────── */}
         <g
-          className={zoneBase}
+          className="cursor-pointer"
           onClick={() => onSelectArea("front")}
           role="button"
           aria-label="Front"
           aria-pressed={isActive("front")}
         >
-          {/* front wheels left */}
-          <rect x="12" y="62" width="30" height="50" rx="8" style={zoneStyle("front")} />
-          {/* front wheels right */}
-          <rect x="158" y="62" width="30" height="50" rx="8" style={zoneStyle("front")} />
-          {/* front body zone */}
-          <rect x="42" y="50" width="116" height="75" rx="20" style={zoneStyle("front")} />
-          <text x="100" y="93" textAnchor="middle" fontSize="10" style={labelStyle("front")}>
+          {/* front-left wheel */}
+          <rect
+            x={wheelLx} y={wheelFrontY}
+            width={wheelW} height={wheelH}
+            rx={wheelRx}
+            style={zoneFill("front")}
+          />
+          {/* front-right wheel */}
+          <rect
+            x={wheelRx2} y={wheelFrontY}
+            width={wheelW} height={wheelH}
+            rx={wheelRx}
+            style={zoneFill("front")}
+          />
+          {/* front body section */}
+          <rect
+            x="44" y="52" width="112" height="88"
+            rx="20" ry="20"
+            style={zoneFill("front")}
+          />
+          <text
+            x="100" y="88"
+            textAnchor="middle"
+            fontSize="11"
+            fill={labelFill("front")}
+            fontWeight={labelWeight("front")}
+          >
             Front
           </text>
         </g>
 
-        {/* ── Rear zone (rear third + rear wheels band) ── */}
+        {/* ── Rear zone ──────────────────────────────────────────────── */}
         <g
-          className={zoneBase}
+          className="cursor-pointer"
           onClick={() => onSelectArea("rear")}
           role="button"
           aria-label="Rear"
           aria-pressed={isActive("rear")}
         >
-          {/* rear wheels left */}
-          <rect x="12" y="208" width="30" height="50" rx="8" style={zoneStyle("rear")} />
-          {/* rear wheels right */}
-          <rect x="158" y="208" width="30" height="50" rx="8" style={zoneStyle("rear")} />
-          {/* rear body zone */}
-          <rect x="42" y="195" width="116" height="75" rx="20" style={zoneStyle("rear")} />
-          <text x="100" y="237" textAnchor="middle" fontSize="10" style={labelStyle("rear")}>
+          {/* rear-left wheel */}
+          <rect
+            x={wheelLx} y={wheelRearY}
+            width={wheelW} height={wheelH}
+            rx={wheelRx}
+            style={zoneFill("rear")}
+          />
+          {/* rear-right wheel */}
+          <rect
+            x={wheelRx2} y={wheelRearY}
+            width={wheelW} height={wheelH}
+            rx={wheelRx}
+            style={zoneFill("rear")}
+          />
+          {/* rear body section */}
+          <rect
+            x="44" y="196" width="112" height="88"
+            rx="20" ry="20"
+            style={zoneFill("rear")}
+          />
+          <text
+            x="100" y="250"
+            textAnchor="middle"
+            fontSize="11"
+            fill={labelFill("rear")}
+            fontWeight={labelWeight("rear")}
+          >
             Rear
           </text>
         </g>
 
-        {/* ── Steering zone (centre circle) ── */}
+        {/* ── Steering zone — cabin centre circle ──────────────────────── */}
         <g
-          className={zoneBase}
+          className="cursor-pointer"
           onClick={() => onSelectArea("steering")}
           role="button"
           aria-label="Steering"
           aria-pressed={isActive("steering")}
         >
-          <circle cx="100" cy="160" r="26" style={zoneStyle("steering")} />
-          {/* steering wheel icon lines */}
+          <circle cx="100" cy="168" r="28" style={zoneFill("steering")} />
+          {/* Steering wheel cross */}
           <line
-            x1="100" y1="140" x2="100" y2="180"
-            stroke={isActive("steering") ? "var(--accent)" : "#737373"}
-            strokeWidth="2" strokeLinecap="round"
+            x1="100" y1="150" x2="100" y2="186"
+            stroke={isActive("steering") ? ACCENT : "#555"}
+            strokeWidth="2.5" strokeLinecap="round"
           />
           <line
-            x1="80" y1="160" x2="120" y2="160"
-            stroke={isActive("steering") ? "var(--accent)" : "#737373"}
-            strokeWidth="2" strokeLinecap="round"
+            x1="82" y1="168" x2="118" y2="168"
+            stroke={isActive("steering") ? ACCENT : "#555"}
+            strokeWidth="2.5" strokeLinecap="round"
           />
-          <text x="100" y="196" textAnchor="middle" fontSize="9" style={labelStyle("steering")}>
+          <text
+            x="100" y="210"
+            textAnchor="middle"
+            fontSize="10"
+            fill={labelFill("steering")}
+            fontWeight={labelWeight("steering")}
+          >
             Steering
           </text>
         </g>
 
-        {/* ── Brakes zone — thin bands across all wheel areas ── */}
+        {/* ── Brakes zone — thin discs at each wheel ───────────────────── */}
         <g
-          className={zoneBase}
+          className="cursor-pointer"
           onClick={() => onSelectArea("brakes")}
           role="button"
           aria-label="Brakes"
           aria-pressed={isActive("brakes")}
         >
-          {/* front-left brake band */}
-          <rect x="12" y="96" width="30" height="12" rx="4" style={zoneStyle("brakes")} />
-          {/* front-right brake band */}
-          <rect x="158" y="96" width="30" height="12" rx="4" style={zoneStyle("brakes")} />
-          {/* rear-left brake band */}
-          <rect x="12" y="212" width="30" height="12" rx="4" style={zoneStyle("brakes")} />
-          {/* rear-right brake band */}
-          <rect x="158" y="212" width="30" height="12" rx="4" style={zoneStyle("brakes")} />
-          {/* label sits in a gap between front and steering */}
-          <text x="100" y="124" textAnchor="middle" fontSize="9" style={labelStyle("brakes")}>
+          {/* front-left disc band */}
+          <rect
+            x={wheelLx} y={wheelFrontY + wheelH - 14}
+            width={wheelW} height={10}
+            rx="4"
+            style={zoneFill("brakes")}
+          />
+          {/* front-right disc band */}
+          <rect
+            x={wheelRx2} y={wheelFrontY + wheelH - 14}
+            width={wheelW} height={10}
+            rx="4"
+            style={zoneFill("brakes")}
+          />
+          {/* rear-left disc band */}
+          <rect
+            x={wheelLx} y={wheelRearY + 4}
+            width={wheelW} height={10}
+            rx="4"
+            style={zoneFill("brakes")}
+          />
+          {/* rear-right disc band */}
+          <rect
+            x={wheelRx2} y={wheelRearY + 4}
+            width={wheelW} height={10}
+            rx="4"
+            style={zoneFill("brakes")}
+          />
+          {/* Label: left side, mid-height, clear of other labels */}
+          <text
+            x="27" y="156"
+            textAnchor="middle"
+            fontSize="9"
+            fill={labelFill("brakes")}
+            fontWeight={labelWeight("brakes")}
+          >
             Brakes
           </text>
         </g>
 
-        {/* ── Overall zone — outer body ring ── */}
+        {/* ── Overall zone — dashed outer ring ─────────────────────────── */}
         <g
-          className={zoneBase}
+          className="cursor-pointer"
           onClick={() => onSelectArea("overall")}
           role="button"
           aria-label="Overall"
           aria-pressed={isActive("overall")}
         >
           <rect
-            x="44" y="52" width="112" height="216"
-            rx="26" ry="26"
+            x="42" y="50" width="116" height="236"
+            rx="24" ry="24"
             fill="none"
-            stroke={isActive("overall") ? "var(--accent)" : "#525252"}
-            strokeWidth={isActive("overall") ? 3 : 2}
-            strokeDasharray="8 4"
+            stroke={isActive("overall") ? ACCENT : "#484848"}
+            strokeWidth={isActive("overall") ? 2.5 : 1.5}
+            strokeDasharray="7 4"
           />
-          <text x="100" y="280" textAnchor="middle" fontSize="9" style={labelStyle("overall")}>
+          <text
+            x="100" y="308"
+            textAnchor="middle"
+            fontSize="10"
+            fill={labelFill("overall")}
+            fontWeight={labelWeight("overall")}
+          >
             Overall
           </text>
         </g>

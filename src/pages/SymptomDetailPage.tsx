@@ -45,7 +45,7 @@ export default function SymptomDetailPage() {
       </div>
 
       {/* Body */}
-      <div className="mx-auto max-w-2xl px-4 py-4 space-y-4">
+      <div className="mx-auto max-w-2xl px-4 py-4 space-y-4 sheet-enter">
         {/* Name + area badge */}
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-2xl font-bold">{symptom.name}</h1>

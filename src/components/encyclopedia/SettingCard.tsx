@@ -7,7 +7,7 @@ export default function SettingCard({ setting }: { setting: Setting }) {
   return (
     <Link
       to={`/setting/${setting.id}`}
-      className="block rounded-lg bg-neutral-900 border border-neutral-800 p-4 min-h-[44px] hover:border-accent transition-colors duration-150"
+      className="block rounded-lg bg-neutral-900 border border-neutral-800 p-4 min-h-[44px] hover:border-accent card-hover"
     >
       <div className="flex items-center gap-2">
         <span className="font-medium text-white">{setting.name}</span>

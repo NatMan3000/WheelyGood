@@ -38,7 +38,7 @@ export default function SettingDetailPage() {
       </div>
 
       {/* Body */}
-      <div className="mx-auto max-w-2xl px-4 py-4 space-y-4">
+      <div className="mx-auto max-w-2xl px-4 py-4 space-y-4 sheet-enter">
         {/* Name + badges */}
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-2xl font-bold">{setting.name}</h1>

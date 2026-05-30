@@ -11,7 +11,7 @@ export default function ProfileCard({ profile }: { profile: Profile }) {
   return (
     <Link
       to={`/saves/${profile.id}`}
-      className="block rounded-lg bg-neutral-900 border border-neutral-800 p-4 min-h-[44px] hover:border-accent transition-colors duration-150"
+      className="block rounded-lg bg-neutral-900 border border-neutral-800 p-4 min-h-[44px] hover:border-accent card-hover"
     >
       <span className="font-medium text-white">{profile.name}</span>
       <div className="flex flex-wrap gap-1.5 mt-2">

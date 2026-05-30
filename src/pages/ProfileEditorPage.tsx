@@ -171,7 +171,11 @@ export default function ProfileEditorPage() {
   // ── Recompute defaults when setup/game/surface changes ─────────────────
   // Only pre-fill recommended values for settings not yet in settingValues.
 
-  const currentSettings = settingsForSetup(setup)
+  // Filter to only include in-game settings for the currently selected game;
+  // hardware/pedal/shifter/handbrake settings are always included.
+  const currentSettings = settingsForSetup(setup).filter(
+    (s) => s.category !== "in-game" || (s.games?.includes(game) ?? false),
+  )
   const grouped = groupByCategory(currentSettings)
 
   const getValueForSetting = useCallback(
