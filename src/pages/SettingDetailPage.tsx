@@ -3,6 +3,8 @@ import { settingById } from "../data/settings"
 import RangeIndicator from "../components/shared/RangeIndicator"
 import DirectionCard from "../components/shared/DirectionCard"
 import SettingChip from "../components/shared/SettingChip"
+import OledTag from "../components/shared/OledTag"
+import Icon from "../components/shared/Icon"
 import { highlightAcronyms } from "../utils/highlightAcronyms"
 
 function accessLabel(access: "on-wheel-tuning" | "in-game"): string {
@@ -26,33 +28,31 @@ export default function SettingDetailPage() {
   }
 
   return (
-    <div className="min-h-svh bg-neutral-950 text-white">
-      {/* Sticky top bar */}
-      <div className="sticky top-0 z-10 flex items-center gap-2 px-4 h-14 border-b border-neutral-800 bg-neutral-950/90 backdrop-blur">
+    <div className="min-h-svh text-white">
+      {/* Minimal back control — no duplicated title; the hero below owns it. */}
+      <div className="sticky top-0 z-10 px-4 h-14 flex items-center bg-gradient-to-b from-neutral-950 to-neutral-950/0">
         <button
           onClick={() => navigate(-1)}
-          className="text-neutral-400 hover:text-white transition-colors duration-150 shrink-0"
+          className="inline-flex items-center gap-1.5 -ml-1 rounded-lg pl-1 pr-2.5 py-1.5 text-sm font-medium text-neutral-300 hover:text-white hover:bg-neutral-900 transition-colors duration-150"
         >
-          ← Back
+          <Icon name="back" className="h-5 w-5" />
+          Back
         </button>
-        <span className="font-medium text-white truncate">{setting.name}</span>
       </div>
 
       {/* Body */}
-      <div className="mx-auto max-w-2xl px-4 py-4 space-y-4 sheet-enter">
-        {/* Name + badges */}
-        <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-2xl font-bold">{setting.name}</h1>
-          {setting.abbreviation && (
-            <span className="rounded bg-neutral-800 text-red-500 font-semibold px-2 py-0.5 text-xs">
-              {setting.abbreviation}
-            </span>
-          )}
-          {setting.unverified && (
-            <span className="bg-amber-500/15 text-amber-400 border border-amber-500/30 rounded px-2 py-0.5 text-xs">
-              Unverified
-            </span>
-          )}
+      <div className="mx-auto max-w-2xl px-4 pb-8 -mt-1 space-y-4 sheet-enter">
+        {/* Hero — OLED tag tile + title, mirrors the encyclopedia list cards */}
+        <div className="flex items-start gap-3">
+          <OledTag code={setting.abbreviation} />
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl font-bold tracking-tight leading-tight">{setting.name}</h1>
+            {setting.unverified && (
+              <span className="mt-1.5 inline-flex bg-amber-500/15 text-amber-400 border border-amber-500/30 rounded px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide">
+                Unverified
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Location */}
@@ -93,8 +93,8 @@ export default function SettingDetailPage() {
 
         {/* Sweet spot */}
         {setting.sweetSpot && (
-          <div className="rounded-lg bg-neutral-900 border-l-4 border-accent p-3">
-            <p className="text-xs uppercase text-neutral-500 mb-1">Sweet spot</p>
+          <div className="rounded-lg border border-accent/30 bg-accent/[0.07] p-3.5">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-accent mb-1">Sweet spot</p>
             <p className="text-neutral-200 text-sm">{highlightAcronyms(setting.sweetSpot)}</p>
           </div>
         )}

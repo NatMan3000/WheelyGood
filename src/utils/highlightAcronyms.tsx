@@ -16,7 +16,7 @@ const ACRONYMS = Array.from(
 const ACRONYM_SET = new Set(ACRONYMS)
 const ACRONYM_RE = ACRONYMS.length ? new RegExp(`\\b(${ACRONYMS.join("|")})\\b`, "g") : null
 
-export const ACRONYM_CLASS = "text-red-500 font-semibold"
+export const ACRONYM_CLASS = "text-red-400 font-semibold"
 
 /** Wrap any on-wheel acronym occurrences in `text` with a bright-red span. */
 export function highlightAcronyms(text: string): ReactNode {

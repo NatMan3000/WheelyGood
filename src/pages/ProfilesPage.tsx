@@ -4,6 +4,8 @@ import { useProfiles } from "../hooks/useProfiles"
 import { importProfileText } from "../utils/profileText"
 import { games } from "../data/settings"
 import ProfileCard from "../components/profiles/ProfileCard"
+import PageHeader from "../components/shared/PageHeader"
+import Icon from "../components/shared/Icon"
 
 export default function ProfilesPage() {
   const { profiles, createProfile } = useProfiles()
@@ -36,35 +38,38 @@ export default function ProfilesPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">Saves</h1>
-          <p className="text-neutral-400 text-sm mt-0.5">Your wheel setups</p>
-        </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <button
-            type="button"
-            onClick={() => {
-              setImportOpen((v) => !v)
-              setImportError(null)
-            }}
-            className="border border-neutral-700 rounded-lg px-4 min-h-[44px] inline-flex items-center font-medium text-sm transition-colors duration-150 hover:border-neutral-500"
-          >
-            Import
-          </button>
-          <Link
-            to="/saves/compare"
-            className="border border-neutral-700 rounded-lg px-4 min-h-[44px] inline-flex items-center font-medium text-sm transition-colors duration-150 hover:border-neutral-500"
-          >
-            Compare
-          </Link>
-          <Link
-            to="/saves/new"
-            className="bg-accent text-black rounded-lg px-4 min-h-[44px] inline-flex items-center font-medium text-sm transition-colors duration-150"
-          >
-            New profile
-          </Link>
-        </div>
+      <div className="mb-6">
+        <PageHeader
+          title="Saves"
+          subtitle="Your wheel setups"
+          actions={
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  setImportOpen((v) => !v)
+                  setImportError(null)
+                }}
+                className="border border-neutral-700 rounded-lg px-4 min-h-[44px] inline-flex items-center font-medium text-sm transition-colors duration-150 hover:border-neutral-500"
+              >
+                Import
+              </button>
+              <Link
+                to="/saves/compare"
+                className="border border-neutral-700 rounded-lg px-4 min-h-[44px] inline-flex items-center font-medium text-sm transition-colors duration-150 hover:border-neutral-500"
+              >
+                Compare
+              </Link>
+              <Link
+                to="/saves/new"
+                className="bg-accent text-black rounded-lg px-4 min-h-[44px] inline-flex items-center gap-1.5 font-semibold text-sm transition-[filter] duration-150 hover:brightness-110"
+              >
+                <Icon name="plus" className="h-4 w-4" />
+                New profile
+              </Link>
+            </>
+          }
+        />
       </div>
 
       {/* Import panel */}
@@ -88,7 +93,7 @@ export default function ProfilesPage() {
             <button
               type="button"
               onClick={handleImport}
-              className="bg-accent text-black rounded-lg px-4 min-h-[44px] inline-flex items-center font-medium text-sm transition-colors duration-150"
+              className="bg-accent text-black rounded-lg px-4 min-h-[44px] inline-flex items-center font-semibold text-sm transition-[filter] duration-150 hover:brightness-110"
             >
               Add
             </button>
@@ -110,13 +115,16 @@ export default function ProfilesPage() {
       {/* Empty state */}
       {!hasProfiles && (
         <div className="py-16 text-center">
-          <span className="text-4xl" aria-hidden="true">💾</span>
-          <p className="text-lg font-medium mt-3">No saved profiles yet</p>
-          <p className="text-neutral-400 text-sm mt-1">Create one to store your wheel settings.</p>
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-neutral-900 border border-neutral-800">
+            <Icon name="saves" className="h-7 w-7 text-neutral-500" />
+          </div>
+          <p className="text-lg font-semibold mt-4">No saved profiles yet</p>
+          <p className="text-neutral-400 text-sm mt-1">Save a tuned wheel setup so you can reload it any time.</p>
           <Link
             to="/saves/new"
-            className="bg-accent text-black rounded-lg px-4 min-h-[44px] inline-flex items-center font-medium text-sm mt-4 mx-auto transition-colors duration-150"
+            className="bg-accent text-black rounded-lg px-4 min-h-[44px] inline-flex items-center gap-1.5 font-semibold text-sm mt-5 mx-auto transition-[filter] duration-150 hover:brightness-110"
           >
+            <Icon name="plus" className="h-4 w-4" />
             New profile
           </Link>
         </div>

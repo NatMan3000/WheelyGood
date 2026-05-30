@@ -6,6 +6,7 @@ import { useSetup } from "../hooks/useSetup"
 import { useGame } from "../hooks/useGame"
 import { highlightAcronyms } from "../utils/highlightAcronyms"
 import GameLogo from "../components/shared/GameLogo"
+import Icon from "../components/shared/Icon"
 
 export default function SymptomDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -38,26 +39,26 @@ export default function SymptomDetailPage() {
   const hiddenCount = sortedFixes.length - contextFixes.length
 
   return (
-    <div className="min-h-svh bg-neutral-950 text-white">
-      {/* Sticky top bar */}
-      <div className="sticky top-0 z-10 flex items-center gap-2 px-4 h-14 border-b border-neutral-800 bg-neutral-950/90 backdrop-blur">
+    <div className="min-h-svh text-white">
+      {/* Minimal back control — no duplicated title; the hero below owns it. */}
+      <div className="sticky top-0 z-10 px-4 h-14 flex items-center bg-gradient-to-b from-neutral-950 to-neutral-950/0">
         <button
           onClick={() => navigate(-1)}
-          className="text-neutral-400 hover:text-white transition-colors duration-150 shrink-0"
+          className="inline-flex items-center gap-1.5 -ml-1 rounded-lg pl-1 pr-2.5 py-1.5 text-sm font-medium text-neutral-300 hover:text-white hover:bg-neutral-900 transition-colors duration-150"
         >
-          ← Back
+          <Icon name="back" className="h-5 w-5" />
+          Back
         </button>
-        <span className="font-medium text-white truncate">{symptom.name}</span>
       </div>
 
       {/* Body */}
-      <div className="mx-auto max-w-2xl px-4 py-4 space-y-4 sheet-enter">
-        {/* Name + area badge */}
-        <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-2xl font-bold">{symptom.name}</h1>
-          <span className="rounded bg-neutral-800 text-neutral-300 px-2 py-0.5 text-xs capitalize">
+      <div className="mx-auto max-w-2xl px-4 pb-8 -mt-1 space-y-4 sheet-enter">
+        {/* Hero */}
+        <div>
+          <span className="inline-flex items-center rounded-full bg-accent/15 text-accent border border-accent/30 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide capitalize mb-2">
             {symptom.area}
           </span>
+          <h1 className="text-2xl font-bold tracking-tight leading-tight">{symptom.name}</h1>
         </div>
 
         {/* Description */}
@@ -96,7 +97,7 @@ export default function SymptomDetailPage() {
               >
                 <div className="flex items-center gap-2 flex-wrap">
                   {/* Priority badge */}
-                  <span className="bg-accent text-black rounded-full w-6 h-6 grid place-items-center text-xs font-bold shrink-0">
+                  <span className="bg-accent text-black rounded-full w-6 h-6 grid place-items-center text-xs font-bold shrink-0 tnum">
                     {fix.priority}
                   </span>
 

@@ -104,7 +104,7 @@ export default function ProfileComparePage() {
       {/* Header */}
       <div className="flex items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Compare</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Compare</h1>
           <p className="text-neutral-400 text-sm mt-0.5">Side-by-side settings diff</p>
         </div>
         <Link
@@ -193,7 +193,7 @@ export default function ProfileComparePage() {
                             key={setting.id}
                             className={[
                               "grid grid-cols-[1fr_5rem_5rem] gap-2 items-center px-3 py-2.5",
-                              differs ? "border-l-2 border-amber-500" : "",
+                              differs ? "bg-amber-500/[0.07]" : "",
                             ].join(" ")}
                           >
                             {/* Setting name */}

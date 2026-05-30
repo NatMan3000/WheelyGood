@@ -2,6 +2,7 @@ import { useState } from "react"
 import type { CarArea } from "../types"
 import CarDiagram from "../components/troubleshooter/CarDiagram"
 import SymptomList from "../components/troubleshooter/SymptomList"
+import PageHeader from "../components/shared/PageHeader"
 import { symptoms, symptomsByArea } from "../data/symptoms/symptoms"
 
 export default function TroubleshooterPage() {
@@ -10,14 +11,8 @@ export default function TroubleshooterPage() {
   const visibleSymptoms = activeArea ? symptomsByArea(activeArea) : symptoms
 
   return (
-    <div className="px-4 py-6 space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold">Troubleshooter</h1>
-        <p className="text-neutral-400 text-sm mt-1">
-          My car does X — what do I change?
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader title="Troubleshooter" subtitle="My car does X — what do I change?" />
 
       {/* Car diagram */}
       <CarDiagram activeArea={activeArea} onSelectArea={setActiveArea} />
@@ -26,8 +21,8 @@ export default function TroubleshooterPage() {
       <div className="space-y-3">
         {activeArea && (
           <div className="flex items-center gap-2">
-            <span className="rounded-full bg-neutral-800 text-neutral-200 border border-neutral-700 px-3 py-0.5 text-xs capitalize">
-              Showing: {activeArea}
+            <span className="rounded-full bg-accent/15 text-accent border border-accent/30 px-3 py-1 text-xs capitalize font-medium">
+              {activeArea}
             </span>
             <button
               onClick={() => setActiveArea(null)}

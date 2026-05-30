@@ -6,15 +6,29 @@ export default function SettingsList({ settings }: { settings: Setting[] }) {
   const groups = groupByCategory(settings)
 
   return (
-    <div>
+    <div className="space-y-8">
       {groups.map((group) => (
         <section key={group.category}>
-          <h2 className="text-xs uppercase tracking-wide text-neutral-500 mb-2 mt-6 first:mt-0">
-            {group.label}
-          </h2>
+          {/* Category header: label + count + rule line */}
+          <div className="flex items-center gap-3 mb-3">
+            <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-300">
+              {group.label}
+            </h2>
+            <span className="text-[11px] font-semibold text-neutral-600 tnum">
+              {group.settings.length}
+            </span>
+            <div className="h-px flex-1 bg-gradient-to-r from-neutral-800 to-transparent" />
+          </div>
+
           <div className="space-y-2">
-            {group.settings.map((setting) => (
-              <SettingCard key={setting.id} setting={setting} />
+            {group.settings.map((setting, i) => (
+              <div
+                key={setting.id}
+                className="item-enter"
+                style={{ animationDelay: `${Math.min(i, 10) * 28}ms` }}
+              >
+                <SettingCard setting={setting} />
+              </div>
             ))}
           </div>
         </section>

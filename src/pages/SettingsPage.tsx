@@ -1,21 +1,22 @@
 import { useSetup } from "../hooks/useSetup"
-import { useTheme } from "../hooks/useTheme"
 import { useGame } from "../hooks/useGame"
 import { setups } from "../data/setups"
-import { themes } from "../data/themes"
 import { games } from "../data/settings"
 import GameLogo from "../components/shared/GameLogo"
 import SetupLogo from "../components/shared/SetupLogo"
+import BrandLogo from "../components/shared/BrandLogo"
+import PageHeader from "../components/shared/PageHeader"
 import type { SetupId } from "../types"
 
 export default function SettingsPage() {
   const { setupId, setSetupId } = useSetup()
   const { gameId, setGameId } = useGame()
-  const { themeId, theme, setThemeId } = useTheme()
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Settings</h1>
+      <div className="mb-6">
+        <PageHeader title="Settings" subtitle="Your rig, your game, your defaults." />
+      </div>
 
       {/* ── Active Setup ── */}
       <section className="mb-8">
@@ -35,7 +36,8 @@ export default function SettingsPage() {
               >
                 <div className="flex items-center gap-2 mb-2">
                   <SetupLogo setupId={s.id as SetupId} className="h-7 w-7" />
-                  <span className="font-medium text-white">{s.name}</span>
+                  <BrandLogo setupId={s.id as SetupId} className="h-7 w-7" />
+                  <span className="font-semibold text-white">{s.name}</span>
                 </div>
                 <ul className="space-y-0.5">
                   {s.components.map((c) => (
@@ -79,31 +81,6 @@ export default function SettingsPage() {
         <p className="text-sm text-neutral-400 mt-2">
           The encyclopedia and troubleshooter suggestions adjust to the game you pick.
         </p>
-      </section>
-
-      {/* ── Accent Theme ── */}
-      <section className="mb-8">
-        <p className="text-xs uppercase tracking-wide text-neutral-500 mb-3">Accent Theme</p>
-        <div className="flex flex-wrap gap-3 mb-3">
-          {themes.map((t) => {
-            const isSelected = t.id === themeId
-            return (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setThemeId(t.id)}
-                aria-label={t.name}
-                className={[
-                  "h-12 w-12 rounded-full transition-all duration-150",
-                  isSelected ? "ring-2 ring-white" : "ring-1 ring-neutral-700",
-                ].join(" ")}
-                style={{ backgroundColor: t.accent }}
-              />
-            )
-          })}
-        </div>
-        <p className="text-sm text-white font-medium">{theme.name}</p>
-        <p className="text-sm text-neutral-400">{theme.use}</p>
       </section>
 
       {/* ── About ── */}

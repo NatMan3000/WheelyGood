@@ -162,6 +162,33 @@ export const f125Settings: Setting[] = [
     unverified: true,
   },
   {
+    id: "f125-pit-stop-effects",
+    name: "Pit Stop Effects",
+    category: "in-game",
+    subcategory: "force-feedback",
+    hardware: ["fanatec-dd", "fanatec-v25", "logitech-g920"],
+    games: ["f1-25"],
+    platform: ["all"],
+    location: {
+      access: "in-game",
+      path: "Settings → Vibration & Force Feedback → Pit Stop Effects",
+    },
+    description:
+      "Vibration during the pit-stop sequence — the jack lifting the car, the wheel guns, the car dropping. Pure immersion: it has zero effect on driving, since you're stationary and the crew is in control.",
+    details:
+      "This channel only fires inside the pit box during a stop. It adds buzz and jolts as the car is jacked up, the tyres are changed, and the car is dropped. Because nothing about it influences how the car drives, it's the one effect you can safely zero with no downside.\n\nThe near-universal community recommendation is 0 — an unexpected jolt while you're sitting in the box waiting for the green light is, at best, a distraction. Leave it higher only if you want the theatre of feeling a stop happen through the wheel.",
+    valueType: { kind: "numeric", min: 0, max: 100, default: 0, unit: "%" },
+    increaseEffect:
+      "More vibration through the wheel during a pit stop — you feel the jack, the guns, and the drop.",
+    decreaseEffect:
+      "Quieter wheel in the pit box. At 0 there is no pit-stop feedback at all — the common choice, since it never affects driving.",
+    sweetSpot: "0 for most drivers — it has no bearing on driving. Raise only for immersion.",
+    warnings: [
+      "Verify the slider exists in your F1 25 menu — it is present in current builds but not listed in every community guide.",
+    ],
+    unverified: true,
+  },
+  {
     id: "f125-wheel-damper",
     name: "Wheel Damper",
     category: "in-game",
@@ -214,23 +241,24 @@ export const f125Settings: Setting[] = [
       "Exaggerates the wheel going dramatically lighter when the front tyres lose grip and the car understeers. An artificial amplification of the natural SAT drop at the grip limit — a deliberate warning signal rather than a simulation.",
     details:
       "When an F1 car understeers, the physics are real: self-aligning torque collapses as the front tyres exceed their peak slip angle, and the wheel naturally goes lighter. Understeer Enhance artificially exaggerates that lightening effect — when you push past front grip, the wheel doesn't just soften, it goes dramatically light, almost like power steering has suddenly engaged.\n\nThis setting was removed in F1 23 but reinstated by F1 25 (confirmed across multiple F1 25 guides including f125game.com, briankoponen.com, and simstaff.net). It is most useful for gear-driven wheels like the G920, which have lower torque resolution and may not communicate the natural SAT drop clearly enough to be readable. Direct-drive users on the ClubSport DD often leave it off entirely — the DD already conveys the natural grip-loss lightening with enough force that the artificial exaggeration adds more alarm than information.\n\nTIP: Very high values make the wheel feel alarmingly lifeless at slow-speed hairpins where a small amount of understeer is normal and expected — every tight corner exit feels like the front has washed. Keep it moderate and use it as a calibration aid rather than an alarm.",
-    valueType: { kind: "numeric", min: 0, max: 100, default: 50, unit: "%" },
+    valueType: { kind: "enum", options: ["Off", "On"], default: "Off" },
     increaseEffect:
-      "More dramatic wheel lightening during understeer — the wheel goes noticeably, artificially light as a clear warning that the front is washing.",
+      "On: the wheel goes dramatically, artificially light the moment the front washes — a clear binary warning the front has let go. Best for gear-driven wheels that struggle to convey the natural lightening on their own.",
     decreaseEffect:
-      "Subtler or no exaggerated lightening — understeer still produces some wheel lightening from the physics model, but the artificial amplification is reduced or absent.",
+      "Off: the wheel still lightens from the physics model when the front slides, just without the artificial exaggeration. Most direct-drive drivers prefer this — the natural SAT drop is already readable.",
     sweetSpot:
-      "DD: 0–30 (DD already conveys natural SAT drop). V2.5: 30–45. G920: 40–60 (gear-driven wheels benefit more from the exaggerated signal).",
+      "DD: Off (the DD already conveys the natural grip-loss lightening). V2.5: Off or On to taste. G920: On — gear drive benefits from the exaggerated cue.",
     warnings: [
-      "Very high values make the wheel feel alarmingly dead at slow-speed hairpins where some understeer is normal — every tight exit becomes a false alarm.",
+      "This is a toggle in F1 25, not a slider — it was removed in F1 23 and reinstated since. Some platforms/wheel configs may not show it; verify it's in your menu.",
+      "With it On, slow hairpins where a little understeer is normal can feel alarmingly dead — every tight exit reads as a front-grip warning.",
     ],
     interactsWith: [
       { settingId: "f125-on-track-effects", relationship: "On Track Effects is a texture/vibration layer; Understeer Enhance is a separate signal that modifies wheel loading at the grip limit." },
     ],
     recommendations: [
-      { game: "f1-25", setup: "xsx", value: 30, notes: "Moderate signal on the responsive DD — useful for calibrating braking zones without false alarms in hairpins." },
-      { game: "f1-25", setup: "xss", value: 40, notes: "Estimate. Slightly higher to ensure the signal is felt through the belt-driven base." },
-      { game: "f1-25", setup: "pc", value: 50, notes: "Estimate. G920 drivers benefit from a stronger understeer signal given lower baseline torque." },
+      { game: "f1-25", setup: "xsx", value: "Off", notes: "The responsive DD already conveys the natural SAT drop — the exaggeration adds alarm, not information." },
+      { game: "f1-25", setup: "xss", value: "Off", notes: "Belt-driven base conveys grip loss reasonably; leave Off unless you want the extra cue." },
+      { game: "f1-25", setup: "pc", value: "On", notes: "G920's gear drive has lower torque resolution — the exaggerated lightening makes understeer easier to catch." },
     ],
     unverified: true,
   },

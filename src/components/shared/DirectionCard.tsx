@@ -11,14 +11,31 @@ export default function DirectionCard({
 
   return (
     <div
-      className={`rounded-lg bg-neutral-900 border border-neutral-800 p-3 ${
-        isUp ? "border-l-4 border-l-emerald-500" : "border-l-4 border-l-red-500"
-      }`}
+      className={[
+        "rounded-lg border p-3.5",
+        isUp
+          ? "border-emerald-500/30 bg-emerald-500/[0.07]"
+          : "border-red-500/30 bg-red-500/[0.07]",
+      ].join(" ")}
     >
-      <p className={`text-sm font-semibold ${isUp ? "text-emerald-400" : "text-red-400"}`}>
-        {isUp ? "Turn it UP ↑" : "Turn it DOWN ↓"}
+      <p
+        className={[
+          "flex items-center gap-2 text-sm font-semibold",
+          isUp ? "text-emerald-400" : "text-red-400",
+        ].join(" ")}
+      >
+        <span
+          aria-hidden="true"
+          className={[
+            "grid h-5 w-5 shrink-0 place-items-center rounded-full text-xs",
+            isUp ? "bg-emerald-500/20" : "bg-red-500/20",
+          ].join(" ")}
+        >
+          {isUp ? "↑" : "↓"}
+        </span>
+        Turn it {isUp ? "up" : "down"}
       </p>
-      <p className="text-neutral-300 text-sm mt-1">{highlightAcronyms(text)}</p>
+      <p className="text-neutral-300 text-sm mt-2">{highlightAcronyms(text)}</p>
     </div>
   )
 }

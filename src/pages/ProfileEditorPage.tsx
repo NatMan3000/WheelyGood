@@ -304,7 +304,7 @@ export default function ProfileEditorPage() {
   return (
     <div className="pb-12">
       {/* Page header */}
-      <h1 className="text-2xl font-bold mb-1">
+      <h1 className="text-2xl font-bold tracking-tight mb-1">
         {isEditMode ? "Edit Profile" : "New Profile"}
       </h1>
       <p className="text-neutral-400 text-sm mb-6">
@@ -455,7 +455,7 @@ export default function ProfileEditorPage() {
           type="button"
           onClick={handleSave}
           disabled={!name.trim()}
-          className="bg-accent text-black rounded-lg px-5 min-h-[44px] font-medium text-sm transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="bg-accent text-black rounded-lg px-5 min-h-[44px] font-semibold text-sm transition-[filter,opacity] duration-150 hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:brightness-100"
         >
           {isEditMode ? "Save changes" : "Create profile"}
         </button>

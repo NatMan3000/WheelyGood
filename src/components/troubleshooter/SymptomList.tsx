@@ -10,8 +10,14 @@ export default function SymptomList({ symptoms }: { symptoms: Symptom[] }) {
 
   return (
     <div className="space-y-2">
-      {symptoms.map((symptom) => (
-        <SymptomCard key={symptom.id} symptom={symptom} />
+      {symptoms.map((symptom, i) => (
+        <div
+          key={symptom.id}
+          className="item-enter"
+          style={{ animationDelay: `${Math.min(i, 10) * 28}ms` }}
+        >
+          <SymptomCard symptom={symptom} />
+        </div>
       ))}
     </div>
   )

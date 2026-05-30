@@ -134,11 +134,14 @@ export interface HardwareComponent {
   summary: string
 }
 
+export type Brand = "fanatec" | "logitech"
+
 export interface Setup {
   id: SetupId
   name: string
   shortName: string
   platform: Platform
+  brand: Brand
   components: HardwareComponent[]
 }
 
