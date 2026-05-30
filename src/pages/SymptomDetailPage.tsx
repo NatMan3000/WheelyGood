@@ -1,9 +1,11 @@
 import { useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { symptomById } from "../data/symptoms/symptoms"
-import { settingById } from "../data/settings"
+import { settingById, games } from "../data/settings"
 import { useSetup } from "../hooks/useSetup"
 import { highlightAcronyms } from "../utils/highlightAcronyms"
+
+const gameName = (id: string) => games.find((g) => g.id === id)?.name ?? id
 
 export default function SymptomDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -109,6 +111,16 @@ export default function SymptomDetailPage() {
                   ) : (
                     <span className="text-red-400 text-sm">↓ Decrease</span>
                   )}
+
+                  {/* Game-specific badge — this fix only applies in the named game(s) */}
+                  {fix.game?.map((g) => (
+                    <span
+                      key={g}
+                      className="bg-sky-500/15 text-sky-300 border border-sky-500/40 rounded px-2 py-0.5 text-xs font-medium"
+                    >
+                      {gameName(g)}
+                    </span>
+                  ))}
                 </div>
 
                 {/* Explanation */}
