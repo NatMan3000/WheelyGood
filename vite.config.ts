@@ -4,6 +4,9 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  // GitHub Pages serves this repo under /WheelyGood/. Must match the router
+  // basename in main.tsx and the manifest scope/start_url below.
+  base: '/WheelyGood/',
   plugins: [
     react(),
     tailwindcss(),
@@ -19,7 +22,8 @@ export default defineConfig({
         background_color: '#0a0a0a',
         display: 'standalone',
         orientation: 'portrait',
-        start_url: '/',
+        scope: '/WheelyGood/',
+        start_url: '/WheelyGood/',
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
@@ -27,8 +31,8 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-        navigateFallback: '/index.html',
+        globPatterns: ['**/*.{js,css,html,svg,png,jpg,jpeg,woff2}'],
+        navigateFallback: '/WheelyGood/index.html',
       },
       devOptions: {
         enabled: false, // keep SW off during dev to avoid stale-asset pain

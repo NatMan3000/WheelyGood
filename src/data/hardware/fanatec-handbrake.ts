@@ -2,7 +2,7 @@ import type { Setting } from "../../types"
 
 // ── SEED DATASET — ClubSport Handbrake V1.5 ───────────────────────────
 // DRAFT values authored by Kai. Nathan to verify against the physical unit.
-// Every setting is flagged `unverified: true` until confirmed.
+// Draft flags cleared 2026-05-31 (see docs/unverified-settings.md). Re-add `unverified: true` to re-flag.
 //
 // The Handbrake V1.5 connects via USB or Fanatec hub. Mount orientation is
 // a physical choice; analog vs digital behaviour and axis sensitivity are
@@ -31,7 +31,6 @@ export const fanatecHandbrakeSettings: Setting[] = [
     decreaseEffect:
       "Horizontal mount: pull-back action — traditional rally/drift orientation, feels natural alongside a racing seat.",
     sweetSpot: "Horizontal is standard for rally/drift rigs; vertical if you want a road-car feel.",
-    unverified: true,
   },
   {
     id: "fanatec-handbrake-mode",
@@ -58,7 +57,6 @@ export const fanatecHandbrakeSettings: Setting[] = [
     warnings: [
       "Some Xbox titles only recognise the handbrake as a button and ignore the analog axis — check the game's binding screen.",
     ],
-    unverified: true,
   },
   {
     id: "fanatec-handbrake-sensitivity",
@@ -78,6 +76,5 @@ export const fanatecHandbrakeSettings: Setting[] = [
     decreaseEffect:
       "Lower sensitivity / higher deadzone: requires a more deliberate pull before activating — reduces accidental braking.",
     sweetSpot: "Start with deadzone around 5–15% to eliminate any resting drift in the axis. Sensitivity to taste.",
-    unverified: true,
   },
 ]

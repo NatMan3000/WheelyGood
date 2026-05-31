@@ -1,9 +1,10 @@
 import type { GameId } from "../../types"
 import { games } from "../../data/settings"
+import { asset } from "../../utils/asset"
 
 const SRC: Record<GameId, string> = {
-  fh6: "/game-fh6.png",
-  "f1-25": "/game-f1.png",
+  fh6: asset("game-fh6.png"),
+  "f1-25": asset("game-f1.png"),
 }
 
 /** A game's logo on a uniform white chip. Pass size via className (default h-6 w-6). */

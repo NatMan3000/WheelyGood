@@ -1,10 +1,11 @@
 import type { SetupId } from "../../types"
 import { setupById } from "../../data/setups"
+import { asset } from "../../utils/asset"
 
 const SRC: Record<SetupId, string> = {
-  xsx: "/setup-xsx.png",
-  xss: "/setup-xss.png",
-  pc: "/setup-pc.svg",
+  xsx: asset("setup-xsx.png"),
+  xss: asset("setup-xss.png"),
+  pc: asset("setup-pc.svg"),
 }
 
 // XSX logo is white-on-black; invert it to dark-on-white so it matches the

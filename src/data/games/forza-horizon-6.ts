@@ -4,8 +4,9 @@ import type { Setting } from "../../types"
 // Names + behaviours VERIFIED against the FULL official Forza Support
 // article "Forza Horizon 6 on Wheel: Advanced Wheel Tuning". See
 // research/fh6-wheel-settings.md.
-// Still `unverified: true` ONLY because Forza does not publish exact slider
+// Values were left draft ONLY because Forza does not publish exact slider
 // ranges/defaults — names, descriptions and tuning direction are official.
+// (Draft flag cleared 2026-05-31, see docs/unverified-settings.md.)
 // Menu: Settings → Advanced Controls (wheel must be connected).
 //
 // Per the official article, FH6 has NO in-game "Steering Rotation" slider
@@ -39,7 +40,6 @@ export const forzaHorizon6Settings: Setting[] = [
     interactsWith: [
       { settingId: "fh6-ffb-load-sensitivity", relationship: "Lowering Load Sensitivity widens dynamic range when FFB Scale is pushed high." },
     ],
-    unverified: true,
   },
   {
     id: "fh6-steering-assist",
@@ -58,7 +58,6 @@ export const forzaHorizon6Settings: Setting[] = [
     increaseEffect: "Normal — more stable, FFB can feel sharper; car is a touch less agile but easier to control.",
     decreaseEffect: "Simulation — assists off, the most direct/authentic behaviour; less stability net.",
     sweetSpot: "Try Simulation on a wheel for authenticity; Normal if the car feels nervous.",
-    unverified: true,
   },
   {
     id: "fh6-center-spring-scale",
@@ -81,7 +80,6 @@ export const forzaHorizon6Settings: Setting[] = [
     recommendations: [
       { game: "fh6", setup: "pc", value: 20, notes: "G920: low center spring recovers tyre feel (per Forza's tip)." },
     ],
-    unverified: true,
   },
   {
     id: "fh6-wheel-damper-scale",
@@ -104,7 +102,6 @@ export const forzaHorizon6Settings: Setting[] = [
       { game: "fh6", setup: "pc", value: 0, notes: "G920: little to no damper — Forza recommends turning it down for more tyre feel." },
       { game: "fh6", setup: "xsx", value: 30, notes: "DD benefits from a touch of damper to settle the strong motor." },
     ],
-    unverified: true,
   },
   {
     id: "fh6-mechanical-trail-scale",
@@ -123,7 +120,6 @@ export const forzaHorizon6Settings: Setting[] = [
     increaseEffect: "Smoother, faster following force with less fidelity — great for drifting, but masks understeer/lockup cues.",
     decreaseEffect: "Less follow force — understeer and lockup come through more clearly.",
     sweetSpot: "Lower it if you can't feel the front washing out; raise it for drift stability.",
-    unverified: true,
   },
   {
     id: "fh6-ffb-minimum-force",
@@ -142,7 +138,6 @@ export const forzaHorizon6Settings: Setting[] = [
     increaseEffect: "Stronger slip/limit cue — clearer feel for the traction edge, but a sharper, peakier sensation at the limit.",
     decreaseEffect: "Reduces tyre-deformation effects — smoother at the limit, but the onset-of-slip cue gets quieter.",
     sweetSpot: "Enough to feel the traction limit clearly without harsh peaks at the edge of grip.",
-    unverified: true,
   },
   {
     id: "fh6-ffb-load-sensitivity",
@@ -161,7 +156,6 @@ export const forzaHorizon6Settings: Setting[] = [
     increaseEffect: "More mid-frequency movement — busier, more 'alive' wheel over undulating road.",
     decreaseEffect: "Smoother wheel — calmer over bumps, with headroom for a higher FFB Scale.",
     sweetSpot: "Lower it if the wheel feels noisy/busy or you're running a high FFB Scale.",
-    unverified: true,
   },
   {
     id: "fh6-road-feel-scale",
@@ -180,7 +174,6 @@ export const forzaHorizon6Settings: Setting[] = [
     increaseEffect: "More kerb and surface texture through the wheel — cornering forces unchanged.",
     decreaseEffect: "Smoother, less buzzy wheel over rough surfaces — cornering forces unchanged.",
     sweetSpot: "To taste — raise for more texture, lower if it feels gritty/noisy.",
-    unverified: true,
   },
   {
     id: "fh6-vibration-scale",
@@ -199,7 +192,6 @@ export const forzaHorizon6Settings: Setting[] = [
     increaseEffect: "Stronger buzz signals for tyre overuse and collisions.",
     decreaseEffect: "Quieter tactile signals — physical FFB forces unaffected.",
     sweetSpot: "To taste; reduce if vibration feels gimmicky.",
-    unverified: true,
   },
   {
     id: "fh6-steering-sensitivity",
@@ -219,7 +211,6 @@ export const forzaHorizon6Settings: Setting[] = [
     decreaseEffect: "Less responsive — steering ratio increases, more wheel movement for the same turn.",
     sweetSpot: "Leave neutral and set rotation on the wheel/driver; only adjust here if the wheel offers no rotation control.",
     warnings: ["Changing wheel rotation (software/hardware) AND this slider together can cause erratic steering — change one, not both."],
-    unverified: true,
   },
   {
     id: "fh6-steering-linearity",
@@ -238,7 +229,6 @@ export const forzaHorizon6Settings: Setting[] = [
     increaseEffect: "Above 50 — more precision near full lock, twitchier near centre.",
     decreaseEffect: "Below 50 — more precision near centre, less near lock.",
     sweetSpot: "50 (linear) for a 1:1 feel; most wheel users leave it here.",
-    unverified: true,
   },
   {
     id: "fh6-steering-deadzone-inside",
@@ -257,7 +247,6 @@ export const forzaHorizon6Settings: Setting[] = [
     increaseEffect: "More wheel movement needed before the car responds — kills a twitchy/self-steering centre.",
     decreaseEffect: "More immediate response off-centre.",
     sweetSpot: "0 for a healthy wheel; raise a few points only to cure centre wander.",
-    unverified: true,
   },
   {
     id: "fh6-steering-deadzone-outside",
@@ -276,7 +265,6 @@ export const forzaHorizon6Settings: Setting[] = [
     increaseEffect: "Reaches full in-game lock with less physical rotation at the extremes.",
     decreaseEffect: "Uses the full outer travel of the wheel for steering.",
     sweetSpot: "0 for most; raise only if full lock feels hard to reach.",
-    unverified: true,
   },
   {
     id: "fh6-steering-axis-invert",
@@ -294,7 +282,6 @@ export const forzaHorizon6Settings: Setting[] = [
     increaseEffect: "ON — steering direction reversed.",
     decreaseEffect: "OFF — normal steering direction.",
     sweetSpot: "OFF.",
-    unverified: true,
   },
   {
     id: "fh6-invert-ffb",
@@ -312,6 +299,5 @@ export const forzaHorizon6Settings: Setting[] = [
     increaseEffect: "ON — flips force direction; correct for a wheel that self-steers the wrong way.",
     decreaseEffect: "OFF — normal direction (correct for almost all wheels).",
     sweetSpot: "OFF unless your wheel clearly fights the wrong way.",
-    unverified: true,
   },
 ]

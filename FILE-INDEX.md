@@ -10,7 +10,7 @@
 
 | File | Retention | Description |
 |------|-----------|-------------|
-| (empty) | | |
+| `unverified-settings.md` | reference | The 43 settings still flagged Draft when the `unverified` flag was bulk-cleared 2026-05-31 — re-check against real menus when convenient |
 
 ## research/
 

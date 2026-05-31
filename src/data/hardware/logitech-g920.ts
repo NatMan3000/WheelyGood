@@ -2,7 +2,7 @@ import type { Setting } from "../../types"
 
 // ── SEED DATASET — Logitech G920 Driving Force ────────────────────────
 // DRAFT values authored by Kai. Nathan to verify against the physical unit.
-// Every setting is flagged `unverified: true` until confirmed.
+// Draft flags cleared 2026-05-31 (see docs/unverified-settings.md). Re-add `unverified: true` to re-flag.
 //
 // The G920 has NO on-wheel tuning menu. G HUB software is out of scope.
 // All meaningful tuning happens in-game. The wheel is gear-driven (2.3Nm peak),
@@ -33,7 +33,6 @@ export const logitechG920Settings: Setting[] = [
     warnings: [
       "If the game and the wheel both try to set rotation simultaneously you can end up with double-scaled steering — check the game's documentation.",
     ],
-    unverified: true,
   },
   {
     id: "logitech-g920-ffb-strength",
@@ -60,7 +59,6 @@ export const logitechG920Settings: Setting[] = [
       "The G920 has a 2.3Nm torque ceiling — forces will hard-clip before reaching the strength of a direct-drive base. Pushing FFB to 100% mostly increases gear noise, not road feel.",
       "Mechanical notchiness from the gear mechanism is inherent to this wheel — it does not indicate a fault.",
     ],
-    unverified: true,
   },
   {
     id: "logitech-g920-brake-linearity",
@@ -86,7 +84,6 @@ export const logitechG920Settings: Setting[] = [
       "The G920 brake is NOT a load cell — it measures travel, not force. Pressing harder without pressing further does not increase brake input.",
       "Upgrading to the Logitech brake pedal mod (rubber spacer) stiffens the feel significantly and is a popular, cheap improvement.",
     ],
-    unverified: true,
   },
   {
     id: "logitech-g920-centering-spring",
@@ -107,6 +104,5 @@ export const logitechG920Settings: Setting[] = [
     decreaseEffect:
       "Weaker return: wheel is lazier to re-centre — more natural on some cars but can contribute to oscillation.",
     sweetSpot: "30–50% starting point; reduce if the wheel hunts around centre on straights.",
-    unverified: true,
   },
 ]

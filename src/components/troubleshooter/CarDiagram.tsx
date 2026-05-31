@@ -1,4 +1,5 @@
 import type { CarArea } from "../../types"
+import { asset } from "../../utils/asset"
 
 const AREAS: { id: CarArea; label: string }[] = [
   { id: "front", label: "Front" },
@@ -23,11 +24,11 @@ interface Props {
 // Chosen deliberately for the richer rendered look.
 
 const ZONE_IMAGES: { area: CarArea; src: string }[] = [
-  { area: "front", src: "/car-front.png" },
-  { area: "rear", src: "/car-rear.png" },
-  { area: "steering", src: "/car-steering.png" },
-  { area: "brakes", src: "/car-brakes.png" },
-  { area: "overall", src: "/car-overall.png" },
+  { area: "front", src: asset("car-front.png") },
+  { area: "rear", src: asset("car-rear.png") },
+  { area: "steering", src: asset("car-steering.png") },
+  { area: "brakes", src: asset("car-brakes.png") },
+  { area: "overall", src: asset("car-overall.png") },
 ]
 
 export default function CarDiagram({ activeArea, onSelectArea }: Props) {
@@ -41,7 +42,7 @@ export default function CarDiagram({ activeArea, onSelectArea }: Props) {
       <div className="relative w-full max-w-[340px] aspect-square">
         {/* Grayscale base (always shown) */}
         <img
-          src="/car-base.png"
+          src={asset("car-base.png")}
           alt="Top-down view of a car — tap an area"
           className="absolute inset-0 h-full w-full object-contain select-none"
           draggable={false}

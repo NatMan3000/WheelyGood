@@ -1,9 +1,10 @@
 import type { Brand, SetupId } from "../../types"
 import { setupById } from "../../data/setups"
+import { asset } from "../../utils/asset"
 
 const SRC: Record<Brand, string> = {
-  fanatec: "/brand-fanatec.png",
-  logitech: "/brand-logitech.png",
+  fanatec: asset("brand-fanatec.png"),
+  logitech: asset("brand-logitech.png"),
 }
 
 const LABEL: Record<Brand, string> = {

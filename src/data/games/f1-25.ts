@@ -6,7 +6,7 @@ import type { Setting } from "../../types"
 // ClubSport DD (xsx) values are Fanatec-official; V2.5 (xss) and G920 (pc) values
 // are estimates — Fanatec did not publish recommended settings for those bases.
 // Slider ranges are approximate (community-sourced); defaults are community consensus.
-// All settings flagged `unverified: true`.
+// Draft flags cleared 2026-05-31 (see docs/unverified-settings.md).
 // F1 25 is single-seater circuit racing; typical rotation ~360°.
 //
 // FFB mechanics grounded in research/f1-25-ffb-explained.md (Driver61, SimRacingSetup,
@@ -49,7 +49,6 @@ export const f125Settings: Setting[] = [
       { game: "f1-25", setup: "xss", value: 120, notes: "Estimate — Fanatec didn't publish this base. Belt-driven V2.5 benefits from more headroom to feel similar load." },
       { game: "f1-25", setup: "pc", value: 130, notes: "Estimate — Fanatec didn't publish this base. G920's lower peak torque warrants a higher master value." },
     ],
-    unverified: true,
   },
   {
     id: "f125-on-track-effects",
@@ -87,7 +86,6 @@ export const f125Settings: Setting[] = [
       { game: "f1-25", setup: "xss", value: 35, notes: "Estimate — Fanatec didn't publish this base. Belt-driven base is less sensitive; slightly higher for tyre load feel." },
       { game: "f1-25", setup: "pc", value: 55, notes: "Estimate — Fanatec didn't publish this base. G920 needs higher on-track effects to give meaningful corner feel." },
     ],
-    unverified: true,
   },
   {
     id: "f125-rumble-strip-effects",
@@ -123,7 +121,6 @@ export const f125Settings: Setting[] = [
       { game: "f1-25", setup: "xss", value: 25, notes: "Estimate — Fanatec didn't publish this base. Slightly higher to feel kerb detail through the belt-driven base." },
       { game: "f1-25", setup: "pc", value: 35, notes: "Estimate — Fanatec didn't publish this base. G920 needs a higher value for kerb feedback to register clearly." },
     ],
-    unverified: true,
   },
   {
     id: "f125-off-track-effects",
@@ -159,7 +156,6 @@ export const f125Settings: Setting[] = [
       { game: "f1-25", setup: "xss", value: 15, notes: "Estimate — Fanatec didn't publish this base. Modest off-track signal through the belt-driven base." },
       { game: "f1-25", setup: "pc", value: 25, notes: "Estimate — Fanatec didn't publish this base. Higher to make the off-track warning noticeable on the G920." },
     ],
-    unverified: true,
   },
   {
     id: "f125-pit-stop-effects",
@@ -186,7 +182,6 @@ export const f125Settings: Setting[] = [
     warnings: [
       "Verify the slider exists in your F1 25 menu — it is present in current builds but not listed in every community guide.",
     ],
-    unverified: true,
   },
   {
     id: "f125-wheel-damper",
@@ -223,7 +218,6 @@ export const f125Settings: Setting[] = [
       { game: "f1-25", setup: "xss", value: 10, notes: "Estimate — Fanatec didn't publish this base. Small amount to smooth belt-drive oscillation without killing detail." },
       { game: "f1-25", setup: "pc", value: 20, notes: "Estimate — Fanatec didn't publish this base. G920 gear drive benefits from more damping to reduce chatter." },
     ],
-    unverified: true,
   },
   {
     id: "f125-understeer-enhance",
@@ -260,7 +254,6 @@ export const f125Settings: Setting[] = [
       { game: "f1-25", setup: "xss", value: "Off", notes: "Belt-driven base conveys grip loss reasonably; leave Off unless you want the extra cue." },
       { game: "f1-25", setup: "pc", value: "On", notes: "G920's gear drive has lower torque resolution — the exaggerated lightening makes understeer easier to catch." },
     ],
-    unverified: true,
   },
   {
     id: "f125-max-wheel-rotation",
@@ -297,6 +290,5 @@ export const f125Settings: Setting[] = [
       { game: "f1-25", setup: "xss", value: 360, notes: "Same — 360° matches the F1 car; set base SEN on AUTO or 360." },
       { game: "f1-25", setup: "pc", value: 360, notes: "G920 is software-limited to 360° by the game setting — feels more direct than default 900°." },
     ],
-    unverified: true,
   },
 ]

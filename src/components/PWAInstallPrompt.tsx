@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { asset } from "../utils/asset"
 
 // Minimal type for the non-standard beforeinstallprompt event (Chromium).
 interface BeforeInstallPromptEvent extends Event {
@@ -42,7 +43,7 @@ export default function PWAInstallPrompt() {
   return (
     <div className="fixed inset-x-0 bottom-20 z-50 mx-auto max-w-md px-4 md:bottom-6 md:left-56">
       <div className="flex items-center gap-3 rounded-xl border border-neutral-700 bg-neutral-900/95 backdrop-blur px-4 py-3 shadow-lg">
-        <img src="/icon.svg" alt="" className="h-9 w-9 rounded-lg shrink-0" />
+        <img src={asset("icon.svg")} alt="" className="h-9 w-9 rounded-lg shrink-0" />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-white">Install WheelyGood</p>
           <p className="text-xs text-neutral-400">Add to your home screen for offline use at the rig.</p>

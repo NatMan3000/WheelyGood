@@ -3,7 +3,7 @@ import type { Setting } from "../../types"
 // ── SEED DATASET — ClubSport Pedals V3 ───────────────────────────────
 // DRAFT values authored by Kai (hybrid sourcing). Nathan to verify each
 // against real menus and pedal behaviour before this is treated as truth.
-// Every setting is flagged `unverified: true` until confirmed.
+// Draft flags cleared 2026-05-31 (see docs/unverified-settings.md). Re-add `unverified: true` to re-flag.
 //
 // Load-cell concept: unlike a standard potentiometer pedal that measures
 // HOW FAR you press the pedal, the CSP V3's brake uses a load cell that
@@ -43,7 +43,6 @@ export const cspV3Settings: Setting[] = [
     interactsWith: [
       { settingId: "csp-v3-brake-vibration", relationship: "BRF affects when ABS fires; ABS intensity determines how clearly you feel it." },
     ],
-    unverified: true,
   },
   {
     id: "csp-v3-brake-vibration",
@@ -66,7 +65,6 @@ export const cspV3Settings: Setting[] = [
     interactsWith: [
       { settingId: "csp-v3-brf", relationship: "BRF sets the threshold where ABS fires; ABS intensity sets how loudly you feel it." },
     ],
-    unverified: true,
   },
   {
     id: "csp-v3-throttle-vibration",
@@ -86,7 +84,6 @@ export const cspV3Settings: Setting[] = [
     warnings: [
       "The throttle vibration channel shares the SHO signal from the base — games must support this channel for it to fire.",
     ],
-    unverified: true,
   },
   {
     id: "csp-v3-brake-performance-kit",
@@ -106,6 +103,5 @@ export const cspV3Settings: Setting[] = [
     warnings: [
       "This is a physical hardware swap. Always adjust BRF after changing elastomers — the force range changes.",
     ],
-    unverified: true,
   },
 ]

@@ -3,7 +3,7 @@ import type { Setting } from "../../types"
 // ── SEED DATASET — CSL Elite Pedals V2 ───────────────────────────────
 // DRAFT values authored by Kai (hybrid sourcing). Nathan to verify each
 // against real menus and pedal behaviour before this is treated as truth.
-// Every setting is flagged `unverified: true` until confirmed.
+// Draft flags cleared 2026-05-31 (see docs/unverified-settings.md). Re-add `unverified: true` to re-flag.
 //
 // Load-cell concept: the CSL Elite V2 brake uses a load cell — it measures
 // HOW HARD you press (force/pressure), not how far the pedal travels.
@@ -43,7 +43,6 @@ export const cslElitePedalsV2Settings: Setting[] = [
       "Unlike the CSP V3, you have no vibration feedback from ABS activation on these pedals — rely on visual ABS indicator in-game and wheel vibration (ABS setting) instead.",
       "After changing BRF, retrain your muscle memory with a few laps before drawing conclusions.",
     ],
-    unverified: true,
   },
   {
     id: "csl-elite-pedals-v2-no-vibration",
@@ -63,7 +62,6 @@ export const cslElitePedalsV2Settings: Setting[] = [
     warnings: [
       "No pedal vibration on the CSL Elite V2. To sense ABS activation, rely on the wheel's ABS vibration (set via Tuning menu → ABS on the wheel base) and your in-game ABS indicator.",
     ],
-    unverified: true,
   },
   {
     id: "csl-elite-pedals-v2-throttle-hall",
@@ -80,7 +78,6 @@ export const cslElitePedalsV2Settings: Setting[] = [
     increaseEffect: "N/A",
     decreaseEffect: "N/A",
     sweetSpot: "No adjustment needed. Hall sensors self-calibrate and don't drift.",
-    unverified: true,
   },
   {
     id: "csl-elite-pedals-v2-brake-performance-kit",
@@ -100,6 +97,5 @@ export const cslElitePedalsV2Settings: Setting[] = [
     warnings: [
       "Physical swap required — no software equivalent. Always re-tune BRF after changing elastomers.",
     ],
-    unverified: true,
   },
 ]

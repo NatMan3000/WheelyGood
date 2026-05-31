@@ -2,7 +2,7 @@ import type { Setting } from "../../types"
 
 // ── SEED DATASET — ClubSport Shifter SQ V1.5 ──────────────────────────
 // DRAFT values authored by Kai. Nathan to verify against the physical unit.
-// Every setting is flagged `unverified: true` until confirmed.
+// Draft flags cleared 2026-05-31 (see docs/unverified-settings.md). Re-add `unverified: true` to re-flag.
 //
 // The SQ V1.5 has no on-wheel menu or software tuning panel.
 // All adjustments are physical: a mode switch on the body, and a resistance
@@ -36,7 +36,6 @@ export const fanatecShifterSettings: Setting[] = [
       "Switch mode with the unit powered off. Switching while powered can confuse the base input mapping.",
       "In-game transmission setting must match — set it to Manual H-Pattern or Manual Sequential to match the physical mode.",
     ],
-    unverified: true,
   },
   {
     id: "fanatec-shifter-resistance",
@@ -60,7 +59,6 @@ export const fanatecShifterSettings: Setting[] = [
     decreaseEffect:
       "Lighter throw: faster, less fatiguing shifts — suits sequential or long sessions.",
     sweetSpot: "Start at medium and adjust by feel. H-pattern road car drivers often prefer medium–heavy.",
-    unverified: true,
   },
   {
     id: "fanatec-shifter-ingame-assignment",
@@ -87,6 +85,5 @@ export const fanatecShifterSettings: Setting[] = [
     warnings: [
       "Forza Horizon titles generally detect Fanatec shifters well. Verify reverse gear assignment separately.",
     ],
-    unverified: true,
   },
 ]

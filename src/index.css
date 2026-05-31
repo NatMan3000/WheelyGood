@@ -64,7 +64,7 @@
         color-mix(in srgb, var(--color-neutral-950) 90%, transparent),
         color-mix(in srgb, var(--color-neutral-950) 93%, transparent)
       ),
-      url("/tyre-tread.jpg");
+      url("./assets/tyre-tread.jpg");
     background-repeat: no-repeat, repeat;
     background-size: cover, 540px auto;
     background-position: center, center;

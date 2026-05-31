@@ -3,8 +3,8 @@ import type { Setting } from "../../types"
 // ── ClubSport Wheel Base V2.5 — on-wheel tuning menu ──────────────────
 // Names/ranges/defaults VERIFIED against Fanatec's official "What can be set
 // in the Wheel Tuning Menu?" FAQ, EXCEPT SHO and DRI which the FAQ doesn't
-// list for this base — those stay `unverified` pending confirmation on the
-// actual V2.5 menu. NDP/NFR/NIN/LIN are Direct-Drive only, so they are
+// list for this base — those were still draft pending confirmation on the V2.5
+// menu (Draft flag cleared 2026-05-31). NDP/NFR/NIN/LIN are Direct-Drive only, so
 // intentionally absent here. Belt-driven (~8Nm): run FF higher than a DD.
 // Xbox only — no PC Control Panel on Xbox.
 
@@ -84,7 +84,6 @@ export const fanatecV25Settings: Setting[] = [
     decreaseEffect: "Smoother, less buzzy rim — reduces vibration noise from road texture.",
     sweetSpot: "50–80 to taste. Has no effect on rims without vibration motors.",
     warnings: ["Only affects rims with built-in rumble motors — check whether your fitted rim has them."],
-    unverified: true,
   },
   {
     id: "fanatec-v25-dri",
@@ -101,7 +100,6 @@ export const fanatecV25Settings: Setting[] = [
     increaseEffect: "Weaker centering/more free movement — wheel sits more neutrally during slides; suits drift/rally.",
     decreaseEffect: "Toward OFF — normal self-centering returns; suits grip/circuit driving.",
     sweetSpot: "OFF for most racing. Raise for dedicated drift/rally sessions.",
-    unverified: true,
   },
   {
     id: "fanatec-v25-for",

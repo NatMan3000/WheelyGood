@@ -11,7 +11,8 @@ import { forzaHorizon6Settings } from "./games/forza-horizon-6"
 import { f125Settings } from "./games/f1-25"
 
 // Aggregate of all settings across hardware + games.
-// NOTE: every entry is currently `unverified` — drafts for Nathan to confirm.
+// NOTE: unverified/Draft flags were bulk-cleared 2026-05-31 — see docs/unverified-settings.md
+// for which settings were still draft at that point.
 export const allSettings: Setting[] = [
   ...fanatecDdSettings,
   ...fanatecV25Settings,
