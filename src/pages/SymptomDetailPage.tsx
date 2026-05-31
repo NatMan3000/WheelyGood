@@ -41,7 +41,10 @@ export default function SymptomDetailPage() {
   return (
     <div className="min-h-svh text-white">
       {/* Minimal back control — no duplicated title; the hero below owns it. */}
-      <div className="sticky top-0 z-10 px-4 h-14 flex items-center bg-gradient-to-b from-neutral-950 to-neutral-950/0">
+      {/* box-content keeps the h-14 button row intact while pt adds the iOS
+          status-bar safe area above it (these full-screen pages sit outside
+          the AppShell, so they handle the top inset themselves). */}
+      <div className="sticky top-0 z-10 px-4 h-14 box-content pt-[max(0px,calc(env(safe-area-inset-top)-0.5rem))] flex items-center bg-gradient-to-b from-neutral-950 via-neutral-950 to-neutral-950/0">
         <button
           onClick={() => navigate(-1)}
           className="inline-flex items-center gap-1.5 -ml-1 rounded-lg pl-1 pr-2.5 py-1.5 text-sm font-medium text-neutral-300 hover:text-white hover:bg-neutral-900 transition-colors duration-150"
