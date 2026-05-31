@@ -85,7 +85,16 @@ bun run build      # Production build
 | **Host** | GitHub Pages (free tier — repo is **public**) |
 | **Trigger** | GitHub Actions on push to `main` (`.github/workflows/deploy.yml`) |
 
-Served under a subpath `/WheelyGood/`, so: `vite.config.ts` sets `base: '/WheelyGood/'`, the router uses `basename={import.meta.env.BASE_URL}`, manifest `scope`/`start_url` are `/WheelyGood/`, and every JS public-asset ref goes through `src/utils/asset.ts` (Vite doesn't rebase absolute paths in JS/CSS — only index.html). The tread background lives in `src/assets/` (not `public/`) so Vite bundles + rebases its CSS `url()`. Full pattern: `~/Dev/memory/github-pages-pwa-deploy.md`.
+Served under a subpath `/WheelyGood/`, so: `vite.config.ts` sets `base: '/WheelyGood/'`, the router uses `basename={import.meta.env.BASE_URL}`, manifest `scope`/`start_url` are `/WheelyGood/`, and every JS public-asset ref goes through `src/utils/asset.ts` (Vite doesn't rebase absolute paths in JS/CSS — only index.html). The tread background lives in `src/assets/` (not `public/`) so Vite bundles + rebases its CSS `url()`. Full pattern: `~/Dev/memory/github-pages-pwa-deploy.md` (Mac-local).
+
+## Mobile / iOS safe-area gotchas
+
+These bite only in the **installed PWA** (standalone), not desktop Chrome — `env(safe-area-inset-*)` reads 0 in browser emulation, so verify on-device (or inject a literal `padding-top` to eyeball).
+
+- **Standalone is full-bleed under the status bar + home indicator** (`apple-mobile-web-app-status-bar-style: black-translucent` + `viewport-fit=cover` in `index.html`). The app pads the safe areas itself — nothing does it automatically.
+- **App-shell layout** (`AppShell.tsx`): root is `flex h-dvh flex-col overflow-hidden` with `pt-[max(0px,calc(env(safe-area-inset-top)-0.5rem))]`; only `<main>` (`min-h-0 flex-1 overflow-y-auto`) scrolls; `BottomNav` is an in-flow flex child (NOT `position:fixed`) with `pb-[env(safe-area-inset-bottom)]`. This stops the bottom nav drifting as iOS Safari's chrome collapses and stops content showing beneath it. `min-h-0` is load-bearing — without it the scroll region won't shrink.
+- **Full-screen routes are OUTSIDE the shell** (`/setting/:id`, `/symptom/:id` in `App.tsx`) so they don't inherit the top inset. Each handles it on its sticky Back bar: `h-14 box-content pt-[max(0px,calc(env(safe-area-inset-top)-0.5rem))]` (box-content keeps the 56px row intact; opaque-top gradient covers the status zone when scrolled).
+- **PageHeader** stacks title-above-actions on mobile (`flex-col md:flex-row`) so action buttons can't overlap the title at narrow widths.
 
 ## Key Decisions
 
