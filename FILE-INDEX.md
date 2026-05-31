@@ -32,4 +32,3 @@
 |------|-----------|-------------|
 | `brand-fanatec.png` | permanent | Fanatec brand logo (256px, used in BrandLogo component and Settings cards) |
 | `brand-logitech.png` | permanent | Logitech G brand logo (256px, used in BrandLogo component and Settings cards) |
-| `tyre-tread.jpg` | permanent | Real tyre tread JPEG used as fixed background texture across the app |
