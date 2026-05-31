@@ -15,12 +15,12 @@ export default function PageHeader({
   actions?: ReactNode
 }) {
   return (
-    <div className="flex items-start justify-between gap-4">
+    <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-4">
       <div className="min-w-0">
         <h1 className="text-3xl font-bold tracking-tight text-white">{title}</h1>
         {subtitle && <p className="text-neutral-400 text-sm mt-1">{subtitle}</p>}
       </div>
-      {actions && <div className="flex items-center gap-2 flex-shrink-0">{actions}</div>}
+      {actions && <div className="flex flex-wrap items-center gap-2 md:flex-shrink-0">{actions}</div>}
     </div>
   )
 }

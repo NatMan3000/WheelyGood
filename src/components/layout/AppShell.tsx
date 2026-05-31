@@ -10,7 +10,7 @@ export default function AppShell() {
     // flex child instead of position:fixed, which otherwise drifts as iOS
     // Safari's address/toolbar chrome collapses on scroll. h-dvh tracks the
     // dynamic viewport so the nav sits flush above the home indicator.
-    <div className="flex h-dvh flex-col overflow-hidden text-white tread-surface pt-[env(safe-area-inset-top)]">
+    <div className="flex h-dvh flex-col overflow-hidden text-white tread-surface pt-[max(0px,calc(env(safe-area-inset-top)-0.5rem))]">
       <Sidebar />
       {/* min-h-0 lets this flex child shrink so its own overflow can scroll;
           md:pl-56 clears the fixed desktop sidebar. */}
