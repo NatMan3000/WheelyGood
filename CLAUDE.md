@@ -75,6 +75,17 @@ bun run build      # Production build
 ## Status
 
 **All 4 phases shipped (2026-05-30).** App builds clean, PWA-installable, offline-capable.
+**Live on GitHub Pages (2026-05-31):** https://natman3000.github.io/WheelyGood/
+
+## Deployment
+
+| Item | Value |
+|------|-------|
+| **Live URL** | https://natman3000.github.io/WheelyGood/ |
+| **Host** | GitHub Pages (free tier — repo is **public**) |
+| **Trigger** | GitHub Actions on push to `main` (`.github/workflows/deploy.yml`) |
+
+Served under a subpath `/WheelyGood/`, so: `vite.config.ts` sets `base: '/WheelyGood/'`, the router uses `basename={import.meta.env.BASE_URL}`, manifest `scope`/`start_url` are `/WheelyGood/`, and every JS public-asset ref goes through `src/utils/asset.ts` (Vite doesn't rebase absolute paths in JS/CSS — only index.html). The tread background lives in `src/assets/` (not `public/`) so Vite bundles + rebases its CSS `url()`. Full pattern: `~/Dev/memory/github-pages-pwa-deploy.md`.
 
 ## Key Decisions
 
@@ -109,4 +120,4 @@ bun run build      # Production build
 
 ## Plan
 
-See `plans/wheely-good-app.md` for full PRD (all phases complete).
+See `plans/wheely-good-app-COMPLETED.md` for full PRD (all phases complete).
