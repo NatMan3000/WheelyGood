@@ -11,7 +11,7 @@ const navItems: { to: string; icon: IconName; label: string }[] = [
 export default function BottomNav() {
   return (
     <nav
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-neutral-950/90 backdrop-blur-md border-t border-neutral-800 grid grid-cols-4 pb-[env(safe-area-inset-bottom)]"
+      className="md:hidden shrink-0 z-40 bg-neutral-950/95 border-t border-neutral-800 grid grid-cols-4 pb-[env(safe-area-inset-bottom)]"
       aria-label="Primary navigation"
     >
       {navItems.map(({ to, icon, label }) => (
