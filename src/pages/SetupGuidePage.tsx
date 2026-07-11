@@ -14,8 +14,7 @@ import {
 import { highlightAcronyms } from "../utils/highlightAcronyms"
 import type { SettingValue } from "../types"
 import OledTag from "../components/shared/OledTag"
-import SetupLogo from "../components/shared/SetupLogo"
-import GameLogo from "../components/shared/GameLogo"
+import ContextPicker from "../components/shared/ContextPicker"
 import Icon from "../components/shared/Icon"
 
 /*
@@ -101,16 +100,10 @@ export default function SetupGuidePage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 rounded-lg bg-neutral-900 border border-neutral-800 p-3.5">
-              <SetupLogo setupId={setupId} className="h-6 w-6" />
-              <GameLogo gameId={gameId} className="h-6 w-6" />
-              <span className="text-sm text-neutral-300">
-                {setup.shortName} · {game.name}
-              </span>
-              <Link to="/learn" className="ml-auto text-xs text-neutral-500 hover:text-accent transition-colors duration-150">
-                change
-              </Link>
-            </div>
+            {/* Pick the rig + game right here — drives the same global
+                context as everywhere else, and the step list / tuning-menu
+                card below update live. */}
+            <ContextPicker />
 
             {setup.tuningMenuAccess && (
               <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-3.5">
