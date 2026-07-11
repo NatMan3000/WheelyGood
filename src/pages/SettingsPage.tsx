@@ -1,7 +1,8 @@
 import { useSetup } from "../hooks/useSetup"
+import { usePageTitle } from "../hooks/usePageTitle"
 import { useGame } from "../hooks/useGame"
 import { setups } from "../data/setups"
-import { games } from "../data/settings"
+import { games, dataVersion } from "../data/settings"
 import GameLogo from "../components/shared/GameLogo"
 import SetupLogo from "../components/shared/SetupLogo"
 import BrandLogo from "../components/shared/BrandLogo"
@@ -9,11 +10,12 @@ import PageHeader from "../components/shared/PageHeader"
 import type { SetupId } from "../types"
 
 export default function SettingsPage() {
+  usePageTitle("Settings")
   const { setupId, setSetupId } = useSetup()
   const { gameId, setGameId } = useGame()
 
   return (
-    <div>
+    <div className="mx-auto max-w-2xl">
       <div className="mb-6">
         <PageHeader title="Settings" subtitle="Your rig, your game, your defaults." />
       </div>
@@ -87,8 +89,8 @@ export default function SettingsPage() {
       <section className="mb-8">
         <p className="text-xs uppercase tracking-wide text-neutral-500 mb-3">About</p>
         <div className="text-sm text-neutral-400 space-y-1">
-          <p>App version: <span className="text-neutral-300">0.1.0</span></p>
-          <p>Data version: <span className="text-neutral-300">Seed — Phase 1</span></p>
+          <p>App version: <span className="text-neutral-300">1.1.0</span></p>
+          <p>Data: <span className="text-neutral-300">{dataVersion}</span></p>
           <p>Built by <span className="text-neutral-300">Nathan &amp; Josh</span></p>
         </div>
       </section>

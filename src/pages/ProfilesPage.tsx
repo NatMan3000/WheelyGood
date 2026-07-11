@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { usePageTitle } from "../hooks/usePageTitle"
 import { Link } from "react-router-dom"
 import { useProfiles } from "../hooks/useProfiles"
 import { importProfileText } from "../utils/profileText"
@@ -8,6 +9,7 @@ import PageHeader from "../components/shared/PageHeader"
 import Icon from "../components/shared/Icon"
 
 export default function ProfilesPage() {
+  usePageTitle("Saves")
   const { profiles, createProfile } = useProfiles()
   const [importOpen, setImportOpen] = useState(false)
   const [importText, setImportText] = useState("")
@@ -138,7 +140,7 @@ export default function ProfilesPage() {
               <p className="text-xs uppercase tracking-wide text-neutral-500 mb-2">
                 {game.name}
               </p>
-              <div className="space-y-2">
+              <div className="space-y-2 lg:grid lg:grid-cols-2 lg:gap-2 lg:space-y-0">
                 {gameProfiles.map((profile) => (
                   <ProfileCard key={profile.id} profile={profile} />
                 ))}

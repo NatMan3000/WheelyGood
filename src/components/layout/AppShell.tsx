@@ -15,7 +15,7 @@ export default function AppShell() {
       {/* min-h-0 lets this flex child shrink so its own overflow can scroll;
           md:pl-56 clears the fixed desktop sidebar. */}
       <main className="min-h-0 flex-1 overflow-y-auto md:pl-56">
-        <div className="mx-auto max-w-2xl px-4 py-4">
+        <div className="mx-auto max-w-2xl lg:max-w-4xl px-4 py-4">
           <Outlet />
         </div>
       </main>

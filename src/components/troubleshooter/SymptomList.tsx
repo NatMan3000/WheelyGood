@@ -9,7 +9,7 @@ export default function SymptomList({ symptoms }: { symptoms: Symptom[] }) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 lg:grid lg:grid-cols-2 lg:gap-2 lg:space-y-0">
       {symptoms.map((symptom, i) => (
         <div
           key={symptom.id}

@@ -76,6 +76,22 @@ bun run build      # Production build
 
 **All 4 phases shipped (2026-05-30).** App builds clean, PWA-installable, offline-capable.
 **Live on GitHub Pages (2026-05-31):** https://natman3000.github.io/WheelyGood/
+**v1.1 "Fable upgrade" (2026-07-11)** — see below.
+
+## v1.1 Upgrade (2026-07-11)
+
+Design/UX context now lives in `PRODUCT.md` + `DESIGN.md` (impeccable-skill format) — read them before design work.
+
+- **Context values everywhere:** every Simpedia card shows the value for the active rig+game (`contextValue()` in `data/settings.ts`) — accent = published rec ("your rig"), neutral = hardware default. Detail pages get a "Your rig" block (`recommendationsForContext()`) with the big value + provenance notes.
+- **F1 25 on-wheel recs populated:** ClubSport DD values are Fanatec-official (SEN 360/FF 75/NDP 55/NFR 0/NIN 0/INT 10/FEI 100, from `research/f1-25-ffb-research-2026-05-30.md` §2); V2.5 SEN/FF are community-derived and say so in their notes. FH6 has no published on-wheel values — cards fall back to defaults.
+- **Profile dial-in view:** `/saves/:id` is now a read-mode page (`ProfileViewPage`) — big values grouped like the wheel menu, tap-to-tick progress persisted per profile (`wg-applied-<id>` in localStorage), Share (clipboard export) + Edit. The editor moved to `/saves/:id/edit`.
+- **Editor:** defaults to the ACTIVE setup+game; context switches no longer wipe typed values (rec-drift hint with tap-to-apply instead); inline two-step delete (no `window.confirm` — blocks browser automation and is banned UX); sticky bottom save bar.
+- **Unified search:** Simpedia search covers name/abbr/description/subcategory/sweetSpot/warnings AND surfaces up to 4 Troubleshooter symptom matches ("From the Troubleshooter"). Troubleshooter has its own symptom search + per-area counts on the pills.
+- **Simpedia header:** setup/game dropdowns stacked vertically top-right (ContextPicker `stacked` prop → compact right-aligned menus). Resolves the 2026-05-30 open thread.
+- **Desktop:** shell widens to `lg:max-w-4xl` with 2-col card grids (settings/symptoms/profiles); form-ish pages (editor/compare/settings/view) self-cap at `max-w-2xl`. Detail pages carry the tread surface now.
+- **Misc:** per-page `document.title` (`usePageTitle`), compare gets a "Differences only" toggle, Settings page shows real version + data provenance (`dataVersion`), app version 1.1.0.
+
+Known lint debt (pre-existing): 3 `react-refresh/only-export-components` errors in `useGame`/`useProfiles`/`useSetup` (provider + hook share a file). Cosmetic; `bun run lint` fails on them.
 
 ## Deployment
 

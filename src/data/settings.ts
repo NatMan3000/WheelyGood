@@ -87,6 +87,47 @@ export function recommendedValue(
   return setting.valueType.default
 }
 
+/**
+ * All recommendations for a setting that apply to the active setup + game.
+ * (recommendedValue() picks one value for pre-fill; this returns the full
+ * matching set — e.g. one per surface — for display on the detail page.)
+ */
+export function recommendationsForContext(
+  setting: Setting,
+  setupId: SetupId,
+  gameId: GameId,
+) {
+  return (setting.recommendations ?? []).filter(
+    (r) => r.setup === setupId && r.game === gameId,
+  )
+}
+
+/**
+ * The single value to show for a setting in the active context, with its
+ * provenance: a real recommendation for this rig+game, or the hardware default.
+ */
+export function contextValue(
+  setting: Setting,
+  setupId: SetupId,
+  gameId: GameId,
+): { value: SettingValue; source: "rec" | "default" } {
+  const recs = recommendationsForContext(setting, setupId, gameId)
+  // Prefer a surface-agnostic rec; otherwise the first surface-specific one.
+  const rec = recs.find((r) => !r.surface) ?? recs[0]
+  if (rec) return { value: rec.value, source: "rec" }
+  return { value: setting.valueType.default, source: "default" }
+}
+
+/** Format a setting value for display (adds the unit to numbers). */
+export function formatValue(setting: Setting, value: SettingValue): string {
+  const vt = setting.valueType
+  const unit = vt.kind !== "enum" ? vt.unit : undefined
+  return typeof value === "number" && unit ? `${value}${unit}` : String(value)
+}
+
+/** Data provenance shown on the Settings page. */
+export const dataVersion = "Verified 2026-05-31 — Fanatec Tuning Menu FAQ · FH6 Advanced Wheel Tuning · F1 25"
+
 export const games: { id: GameId; name: string }[] = [
   { id: "fh6", name: "Forza Horizon 6" },
   { id: "f1-25", name: "F1 25" },

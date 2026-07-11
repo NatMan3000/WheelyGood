@@ -22,6 +22,9 @@ export const fanatecDdSettings: Setting[] = [
     decreaseEffect: "Fewer degrees — faster, more direct steering but can feel nervous.",
     sweetSpot: "Leave on AUTO unless a game ignores it; then match the car's real rotation.",
     warnings: ["Manually setting SEN while the game also sets rotation can double-scale your steering."],
+    recommendations: [
+      { game: "f1-25", setup: "xsx", value: 360, notes: "Fanatec official F1 25 value — matches a real F1 car's steering lock." },
+    ],
   },
   {
     id: "fanatec-dd-ff",
@@ -39,6 +42,9 @@ export const fanatecDdSettings: Setting[] = [
     sweetSpot: "Default is 100; many run 60–80 on the 15Nm DD for road cars to cut fatigue.",
     warnings: ["Too high clips the strongest forces, flattening detail (everything feels maxed)."],
     interactsWith: [{ settingId: "fanatec-dd-fei", relationship: "High FF can mask FEI sharpness." }],
+    recommendations: [
+      { game: "f1-25", setup: "xsx", value: 75, notes: "Fanatec official F1 25 value for the ClubSport DD. Pair with in-game FFB Strength 100." },
+    ],
   },
   {
     id: "fanatec-dd-ndp",
@@ -56,6 +62,9 @@ export const fanatecDdSettings: Setting[] = [
     decreaseEffect: "Freer, more reactive wheel — more detail but more prone to shake on straights.",
     sweetSpot: "Fanatec ships NDP at 50; many lower it to 10–30 on a DD for more detail.",
     interactsWith: [{ settingId: "fanatec-dd-nfr", relationship: "High NDP + NFR together feel heavy and numb." }],
+    recommendations: [
+      { game: "f1-25", setup: "xsx", value: 55, notes: "Fanatec official F1 25 value — calms single-seater oscillation on straights." },
+    ],
   },
   {
     id: "fanatec-dd-nfr",
@@ -72,6 +81,9 @@ export const fanatecDdSettings: Setting[] = [
     increaseEffect: "More static weight at all speeds — adds 'mechanical' feel but masks detail.",
     decreaseEffect: "Lighter, freer steering — more raw FFB detail comes through.",
     sweetSpot: "OFF–10 for most; keep low to preserve DD fidelity.",
+    recommendations: [
+      { game: "f1-25", setup: "xsx", value: 0, notes: "Fanatec official F1 25 value: OFF — keeps the signal clean." },
+    ],
   },
   {
     id: "fanatec-dd-nin",
@@ -88,6 +100,9 @@ export const fanatecDdSettings: Setting[] = [
     increaseEffect: "Wheel carries more momentum — smoother direction changes but slower to react.",
     decreaseEffect: "Lighter, more immediate wheel — quicker to change direction, less 'flywheel' feel.",
     sweetSpot: "OFF for most; a little can settle a very light/fast rim.",
+    recommendations: [
+      { game: "f1-25", setup: "xsx", value: 0, notes: "Fanatec official F1 25 value: OFF — keeps steering response sharp." },
+    ],
   },
   {
     id: "fanatec-dd-fei",
@@ -103,6 +118,9 @@ export const fanatecDdSettings: Setting[] = [
     increaseEffect: "Sharper, snappier effects — every bump and kerb is crisp (can feel notchy).",
     decreaseEffect: "Smoother, softer effects — gentler on the wrists, less harsh detail.",
     sweetSpot: "Default 100; reduce only if effects feel harsh or grainy.",
+    recommendations: [
+      { game: "f1-25", setup: "xsx", value: 100, notes: "Fanatec official F1 25 value — full effect sharpness." },
+    ],
   },
   {
     id: "fanatec-dd-int",
@@ -119,6 +137,9 @@ export const fanatecDdSettings: Setting[] = [
     increaseEffect: "Smoother forces, less notchiness — at the cost of slight response delay.",
     decreaseEffect: "More immediate, raw forces — sharper but can feel stepped on lower-Hz games.",
     sweetSpot: "Default 6; lower toward OFF on a clean DD signal if you want maximum immediacy.",
+    recommendations: [
+      { game: "f1-25", setup: "xsx", value: 10, notes: "Fanatec official F1 25 value — smooths F1 25's lower-rate console FFB signal." },
+    ],
   },
   {
     id: "fanatec-dd-lin",

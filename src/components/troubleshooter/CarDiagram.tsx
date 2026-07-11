@@ -12,6 +12,8 @@ const AREAS: { id: CarArea; label: string }[] = [
 interface Props {
   activeArea: CarArea | null
   onSelectArea: (area: CarArea) => void
+  /** Symptom count per area, shown on the fallback pills. */
+  counts?: Record<CarArea, number>
 }
 
 // Baked-image diagram: a grayscale base plus one pre-rendered lime-glow image
@@ -31,7 +33,7 @@ const ZONE_IMAGES: { area: CarArea; src: string }[] = [
   { area: "overall", src: asset("car-overall.png") },
 ]
 
-export default function CarDiagram({ activeArea, onSelectArea }: Props) {
+export default function CarDiagram({ activeArea, onSelectArea, counts }: Props) {
   const hit = (area: CarArea) => ({
     onClick: () => onSelectArea(area),
     style: { fill: "transparent", pointerEvents: "all" as const, cursor: "pointer" },
@@ -39,7 +41,9 @@ export default function CarDiagram({ activeArea, onSelectArea }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="relative w-full max-w-[340px] aspect-square">
+      {/* rounded + hairline border so the baked image's dark plate reads as a
+          deliberate panel against the tread background, not a pasted rectangle */}
+      <div className="relative w-full max-w-[340px] aspect-square overflow-hidden rounded-2xl border border-neutral-800">
         {/* Grayscale base (always shown) */}
         <img
           src={asset("car-base.png")}
@@ -94,18 +98,28 @@ export default function CarDiagram({ activeArea, onSelectArea }: Props) {
       <div className="flex flex-wrap justify-center gap-2">
         {AREAS.map((a) => {
           const active = activeArea === a.id
+          const count = counts?.[a.id]
           return (
             <button
               key={a.id}
               onClick={() => onSelectArea(a.id)}
               className={
-                "rounded-full px-4 min-h-[44px] text-sm transition-colors duration-150 " +
+                "rounded-full px-4 min-h-[44px] text-sm transition-colors duration-150 inline-flex items-center gap-1.5 " +
                 (active
                   ? "bg-accent text-black font-medium"
                   : "border border-neutral-700 text-neutral-300 hover:border-accent")
               }
             >
               {a.label}
+              {count !== undefined && (
+                <span
+                  className={
+                    "text-[11px] font-semibold tnum " + (active ? "text-black/60" : "text-neutral-500")
+                  }
+                >
+                  {count}
+                </span>
+              )}
             </button>
           )
         })}

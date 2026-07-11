@@ -25,11 +25,14 @@ function Dropdown({
   options,
   activeId,
   onSelect,
+  compact = false,
 }: {
   label: string
   options: Option[]
   activeId: string
   onSelect: (id: string) => void
+  /** Compact mode: no label above the trigger, right-aligned menu (stacked header layout). */
+  compact?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -53,16 +56,20 @@ function Dropdown({
 
   return (
     <div ref={ref} className="relative flex-1 min-w-0">
-      <span className="block text-[10px] font-semibold uppercase tracking-wider text-neutral-500 mb-1">
-        {label}
-      </span>
+      {!compact && (
+        <span className="block text-[10px] font-semibold uppercase tracking-wider text-neutral-500 mb-1">
+          {label}
+        </span>
+      )}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-label={label}
         className={[
-          "flex w-full items-center gap-2 rounded-lg border bg-neutral-900 py-2 pl-2 pr-2.5 min-h-[44px] text-sm transition-colors duration-150",
+          "flex w-full items-center gap-2 rounded-lg border bg-neutral-900 pl-2 pr-2.5 text-sm transition-colors duration-150",
+          compact ? "py-1.5 min-h-[40px]" : "py-2 min-h-[44px]",
           open ? "border-accent" : "border-neutral-800 hover:border-neutral-600",
         ].join(" ")}
       >
@@ -82,7 +89,10 @@ function Dropdown({
       {open && (
         <ul
           role="listbox"
-          className="absolute z-30 mt-1.5 w-full overflow-hidden rounded-lg border border-neutral-700 bg-neutral-900 shadow-xl shadow-black/40 item-enter"
+          className={[
+            "absolute z-30 mt-1.5 min-w-full w-max max-w-[260px] overflow-hidden rounded-lg border border-neutral-700 bg-neutral-900 shadow-xl shadow-black/40 item-enter",
+            compact ? "right-0" : "left-0",
+          ].join(" ")}
         >
           {options.map((o) => {
             const selected = o.id === activeId
@@ -115,9 +125,10 @@ function Dropdown({
 /*
   Two dropdowns — Setup and Game — that drive the global setup/game context.
   Replaces the read-only context pill so the encyclopedia can be re-scoped
-  without a trip to Settings.
+  without a trip to Settings. `stacked` renders them as a vertical pair for
+  the top-right corner of a page header.
 */
-export default function ContextPicker() {
+export default function ContextPicker({ stacked = false }: { stacked?: boolean }) {
   const { setupId, setSetupId } = useSetup()
   const { gameId, setGameId } = useGame()
 
@@ -140,18 +151,20 @@ export default function ContextPicker() {
   }))
 
   return (
-    <div className="flex gap-2">
+    <div className={stacked ? "flex w-44 shrink-0 flex-col gap-1.5" : "flex gap-2"}>
       <Dropdown
         label="Setup"
         options={setupOptions}
         activeId={setupId}
         onSelect={(id) => setSetupId(id as SetupId)}
+        compact={stacked}
       />
       <Dropdown
         label="Game"
         options={gameOptions}
         activeId={gameId}
         onSelect={(id) => setGameId(id as GameId)}
+        compact={stacked}
       />
     </div>
   )

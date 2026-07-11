@@ -4,6 +4,7 @@ import AppShell from './components/layout/AppShell'
 import EncyclopediaPage from './pages/EncyclopediaPage'
 import TroubleshooterPage from './pages/TroubleshooterPage'
 import ProfilesPage from './pages/ProfilesPage'
+import ProfileViewPage from './pages/ProfileViewPage'
 import ProfileEditorPage from './pages/ProfileEditorPage'
 import ProfileComparePage from './pages/ProfileComparePage'
 import SettingsPage from './pages/SettingsPage'
@@ -22,7 +23,8 @@ export default function App() {
         <Route path="/saves" element={<ProfilesPage />} />
         <Route path="/saves/new" element={<ProfileEditorPage />} />
         <Route path="/saves/compare" element={<ProfileComparePage />} />
-        <Route path="/saves/:id" element={<ProfileEditorPage />} />
+        <Route path="/saves/:id" element={<ProfileViewPage />} />
+        <Route path="/saves/:id/edit" element={<ProfileEditorPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
       {/* Deep-linkable full-screen detail (outside the shell). */}

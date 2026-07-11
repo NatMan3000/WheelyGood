@@ -25,23 +25,7 @@ export default function ProfileComparePage() {
 
   const [aId, setAId] = useState<string>(() => profiles[0]?.id ?? "")
   const [bId, setBId] = useState<string>(() => profiles[1]?.id ?? "")
-
-  // ── Guard: need at least 2 profiles ────────────────────────────────────
-
-  if (profiles.length < 2) {
-    return (
-      <div className="py-16 text-center">
-        <p className="text-lg font-medium">Need at least two profiles to compare.</p>
-        <p className="text-neutral-400 text-sm mt-1">Create a second profile first.</p>
-        <Link
-          to="/saves/new"
-          className="bg-accent text-black rounded-lg px-4 min-h-[44px] inline-flex items-center font-medium text-sm mt-4 mx-auto transition-colors duration-150"
-        >
-          New profile
-        </Link>
-      </div>
-    )
-  }
+  const [diffOnly, setDiffOnly] = useState(false)
 
   const profileA = profiles.find((p) => p.id === aId)
   const profileB = profiles.find((p) => p.id === bId)
@@ -97,10 +81,27 @@ export default function ProfileComparePage() {
   const selectClass =
     "rounded-lg bg-neutral-900 border border-neutral-800 px-3 py-2 min-h-[44px] focus:border-accent outline-none text-white text-sm transition-colors duration-150 w-full"
 
+  // ── Guard: need at least 2 profiles (after hooks, per rules-of-hooks) ────
+
+  if (profiles.length < 2) {
+    return (
+      <div className="py-16 text-center">
+        <p className="text-lg font-medium">Need at least two profiles to compare.</p>
+        <p className="text-neutral-400 text-sm mt-1">Create a second profile first.</p>
+        <Link
+          to="/saves/new"
+          className="bg-accent text-black rounded-lg px-4 min-h-[44px] inline-flex items-center font-medium text-sm mt-4 mx-auto transition-colors duration-150"
+        >
+          New profile
+        </Link>
+      </div>
+    )
+  }
+
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="pb-12">
+    <div className="mx-auto max-w-2xl pb-12">
       {/* Header */}
       <div className="flex items-center justify-between gap-4 mb-6">
         <div>
@@ -155,16 +156,33 @@ export default function ProfileComparePage() {
       {/* Diff summary */}
       {profileA && profileB && aId !== bId && (
         <>
-          <p className="text-sm text-neutral-400 mb-4">
-            {diffCount === 0 ? (
-              <span className="text-neutral-300">Profiles are identical.</span>
-            ) : (
-              <>
-                <span className="text-white font-medium">{diffCount}</span>{" "}
-                {diffCount === 1 ? "setting differs" : "settings differ"}
-              </>
+          <div className="flex items-center justify-between gap-2 mb-4">
+            <p className="text-sm text-neutral-400">
+              {diffCount === 0 ? (
+                <span className="text-neutral-300">Profiles are identical.</span>
+              ) : (
+                <>
+                  <span className="text-white font-medium">{diffCount}</span>{" "}
+                  {diffCount === 1 ? "setting differs" : "settings differ"}
+                </>
+              )}
+            </p>
+            {diffCount > 0 && (
+              <button
+                type="button"
+                onClick={() => setDiffOnly((v) => !v)}
+                aria-pressed={diffOnly}
+                className={[
+                  "rounded-full border px-3 py-1 text-xs font-medium transition-colors duration-150",
+                  diffOnly
+                    ? "border-accent/40 bg-accent/15 text-accent"
+                    : "border-neutral-700 text-neutral-400 hover:border-neutral-500",
+                ].join(" ")}
+              >
+                Differences only
+              </button>
             )}
-          </p>
+          </div>
 
           {/* Column headers */}
           <div className="overflow-x-auto -mx-4 px-4">
@@ -182,7 +200,13 @@ export default function ProfileComparePage() {
                 </p>
               ) : (
                 <div className="space-y-5">
-                  {grouped.map(({ category, label, rows }) => (
+                  {grouped
+                    .map((g) => ({
+                      ...g,
+                      rows: diffOnly ? g.rows.filter((r) => r.differs) : g.rows,
+                    }))
+                    .filter((g) => g.rows.length > 0)
+                    .map(({ category, label, rows }) => (
                     <div key={category}>
                       <p className="text-xs uppercase tracking-wide text-neutral-500 mb-2">
                         {label}

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
+import { usePageTitle } from "../hooks/usePageTitle"
 import { symptomById } from "../data/symptoms/symptoms"
 import { settingById } from "../data/settings"
 import { useSetup } from "../hooks/useSetup"
@@ -15,6 +16,7 @@ export default function SymptomDetailPage() {
   const { gameId, game } = useGame()
   const [showAll, setShowAll] = useState(false)
   const symptom = id ? symptomById(id) : undefined
+  usePageTitle(symptom?.name)
 
   if (!symptom) {
     return (
@@ -39,7 +41,7 @@ export default function SymptomDetailPage() {
   const hiddenCount = sortedFixes.length - contextFixes.length
 
   return (
-    <div className="min-h-svh text-white">
+    <div className="min-h-svh text-white tread-surface">
       {/* Minimal back control — no duplicated title; the hero below owns it. */}
       {/* box-content keeps the h-14 button row intact while pt adds the iOS
           status-bar safe area above it (these full-screen pages sit outside

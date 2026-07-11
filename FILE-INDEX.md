@@ -1,5 +1,12 @@
 # File Index
 
+## / (root)
+
+| File | Retention | Description |
+|------|-----------|-------------|
+| `PRODUCT.md` | permanent | impeccable-skill product context — users, scene sentence, tone, anti-references, strategic principles |
+| `DESIGN.md` | permanent | impeccable-skill design system doc — colors, type, components, motion, iOS PWA constraints (documented from live code) |
+
 ## plans/
 
 | File | Retention | Description |

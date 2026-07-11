@@ -27,6 +27,9 @@ export const fanatecV25Settings: Setting[] = [
     warnings: [
       "Setting SEN manually while the game also sets rotation can double-scale your steering, making it far too sensitive.",
     ],
+    recommendations: [
+      { game: "f1-25", setup: "xss", value: 360, notes: "Matches a real F1 car's steering lock. (Fanatec publishes no V2.5 values for F1 25 — this mirrors their DD guidance.)" },
+    ],
   },
   {
     id: "fanatec-v25-ff",
@@ -50,6 +53,9 @@ export const fanatecV25Settings: Setting[] = [
     ],
     interactsWith: [
       { settingId: "fanatec-v25-fei", relationship: "FF sets the volume; FEI sets the sharpness of what you hear at that volume." },
+    ],
+    recommendations: [
+      { game: "f1-25", setup: "xss", value: 90, notes: "Community-derived (Fanatec publishes no V2.5 values for F1 25). Belt drive peaks lower than a DD, so run FF higher; back off 5–10 if the wheel feels numb in fast corners." },
     ],
   },
   {

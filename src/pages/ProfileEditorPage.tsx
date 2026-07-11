@@ -1,14 +1,16 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import { useProfiles } from "../hooks/useProfiles"
+import { useSetup } from "../hooks/useSetup"
+import { useGame } from "../hooks/useGame"
 import type { NewProfileInput } from "../hooks/useProfiles"
-import { exportProfileText } from "../utils/profileText"
 import { setups } from "../data/setups"
 import {
   games,
   settingsForSetup,
   groupByCategory,
   recommendedValue,
+  formatValue,
 } from "../data/settings"
 import type { GameId, SetupId, SurfaceType, SettingValue, Setting } from "../types"
 
@@ -145,10 +147,14 @@ export default function ProfileEditorPage() {
   const existingProfile = id ? getProfile(id) : undefined
 
   // ── Form state ──────────────────────────────────────────────────────────
+  // New profiles start from the ACTIVE rig + game — you're almost always
+  // saving settings for the thing you're currently tuning.
 
+  const { setupId: activeSetupId } = useSetup()
+  const { gameId: activeGameId } = useGame()
   const [name, setName] = useState("")
-  const [setup, setSetup] = useState<SetupId>(setups[0].id)
-  const [game, setGame] = useState<GameId>(games[0].id)
+  const [setup, setSetup] = useState<SetupId>(activeSetupId)
+  const [game, setGame] = useState<GameId>(activeGameId)
   const [surface, setSurface] = useState<SurfaceType | undefined>(undefined)
   const [notes, setNotes] = useState("")
   const [settingValues, setSettingValues] = useState<
@@ -156,17 +162,20 @@ export default function ProfileEditorPage() {
   >({})
 
   // ── Initialise from existing profile (edit mode) ────────────────────────
+  // Render-time state adjustment (the React-blessed pattern) rather than an
+  // effect: re-seeds whenever the routed profile changes, e.g. after Duplicate
+  // navigates to the copy while this component stays mounted.
 
-  useEffect(() => {
-    if (isEditMode && existingProfile) {
-      setName(existingProfile.name)
-      setSetup(existingProfile.setup)
-      setGame(existingProfile.game)
-      setSurface(existingProfile.surface)
-      setNotes(existingProfile.notes ?? "")
-      setSettingValues(existingProfile.settings)
-    }
-  }, [isEditMode, existingProfile])
+  const [loadedProfileId, setLoadedProfileId] = useState<string | null>(null)
+  if (isEditMode && existingProfile && loadedProfileId !== existingProfile.id) {
+    setLoadedProfileId(existingProfile.id)
+    setName(existingProfile.name)
+    setSetup(existingProfile.setup)
+    setGame(existingProfile.game)
+    setSurface(existingProfile.surface)
+    setNotes(existingProfile.notes ?? "")
+    setSettingValues(existingProfile.settings)
+  }
 
   // ── Recompute defaults when setup/game/surface changes ─────────────────
   // Only pre-fill recommended values for settings not yet in settingValues.
@@ -187,20 +196,20 @@ export default function ProfileEditorPage() {
     [settingValues, game, setup, surface],
   )
 
-  // When setup changes, reset stored values so they re-derive from recommendations
+  // Changing context used to wipe settingValues so recommendations re-derive —
+  // which silently destroyed every value the user had typed. Now edits are
+  // kept: untouched settings still re-derive (they're not in settingValues),
+  // and the per-setting "Rec" hint shows any drift with a one-tap apply.
   function handleSetupChange(newSetup: SetupId) {
     setSetup(newSetup)
-    setSettingValues({})
   }
 
   function handleGameChange(newGame: GameId) {
     setGame(newGame)
-    setSettingValues({})
   }
 
   function handleSurfaceChange(newSurface: SurfaceType | undefined) {
     setSurface(newSurface)
-    setSettingValues({})
   }
 
   function handleSettingValue(settingId: string, value: SettingValue) {
@@ -252,7 +261,7 @@ export default function ProfileEditorPage() {
 
     if (isEditMode && id) {
       updateProfile(id, input)
-      navigate("/saves")
+      navigate(`/saves/${id}`)
     } else {
       const created = createProfile(input)
       navigate(`/saves/${created.id}`)
@@ -262,25 +271,26 @@ export default function ProfileEditorPage() {
   function handleDuplicate() {
     if (!id) return
     const copy = duplicateProfile(id)
-    if (copy) navigate(`/saves/${copy.id}`)
+    if (copy) navigate(`/saves/${copy.id}/edit`)
   }
+
+  // Two-step inline delete — no blocking browser dialog. First tap arms it,
+  // second tap (within 4s) deletes.
+  const [deleteArmed, setDeleteArmed] = useState(false)
+  const disarmTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => { if (disarmTimer.current) clearTimeout(disarmTimer.current) }, [])
 
   function handleDelete() {
     if (!id) return
-    if (window.confirm(`Delete "${name}"? This cannot be undone.`)) {
-      deleteProfile(id)
-      navigate("/saves")
+    if (!deleteArmed) {
+      setDeleteArmed(true)
+      disarmTimer.current = setTimeout(() => setDeleteArmed(false), 4000)
+      return
     }
-  }
-
-  const [copied, setCopied] = useState(false)
-
-  function handleExport() {
-    if (!id || !existingProfile) return
-    navigator.clipboard.writeText(exportProfileText(existingProfile)).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
+    if (disarmTimer.current) clearTimeout(disarmTimer.current)
+    deleteProfile(id)
+    navigate("/saves")
   }
 
   // ── Not found (edit mode, bad id) ───────────────────────────────────────
@@ -302,7 +312,7 @@ export default function ProfileEditorPage() {
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="pb-12">
+    <div className="mx-auto max-w-2xl">
       {/* Page header */}
       <h1 className="text-2xl font-bold tracking-tight mb-1">
         {isEditMode ? "Edit Profile" : "New Profile"}
@@ -432,6 +442,23 @@ export default function ProfileEditorPage() {
                         onChange={(v) => handleSettingValue(setting.id, v)}
                       />
 
+                      {/* Drift from the recommendation for this context — one tap to apply */}
+                      {(() => {
+                        const rec = recommendedValue(setting, { game, setup, surface })
+                        const current = getValueForSetting(setting)
+                        if (String(current) === String(rec)) return null
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => handleSettingValue(setting.id, rec)}
+                            className="mt-1.5 text-xs text-neutral-500 hover:text-neutral-300 transition-colors duration-150"
+                          >
+                            Rec: <span className="text-accent font-semibold tnum">{formatValue(setting, rec)}</span>
+                            <span className="text-neutral-600"> · tap to apply</span>
+                          </button>
+                        )
+                      })()}
+
                       {/* Optional per-setting notes */}
                       <input
                         type="text"
@@ -449,28 +476,9 @@ export default function ProfileEditorPage() {
         )}
       </section>
 
-      {/* ── Primary actions ── */}
-      <div className="flex flex-wrap gap-3 mb-4">
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={!name.trim()}
-          className="bg-accent text-black rounded-lg px-5 min-h-[44px] font-semibold text-sm transition-[filter,opacity] duration-150 hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:brightness-100"
-        >
-          {isEditMode ? "Save changes" : "Create profile"}
-        </button>
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="border border-neutral-700 rounded-lg px-5 min-h-[44px] text-sm font-medium transition-colors duration-150 hover:border-neutral-500"
-        >
-          Cancel
-        </button>
-      </div>
-
       {/* ── Edit-only actions ── */}
       {isEditMode && (
-        <div className="flex flex-wrap gap-3 pt-4 border-t border-neutral-800">
+        <div className="flex flex-wrap gap-3 pb-4">
           <button
             type="button"
             onClick={handleDuplicate}
@@ -480,20 +488,39 @@ export default function ProfileEditorPage() {
           </button>
           <button
             type="button"
-            onClick={handleExport}
-            className="border border-neutral-700 rounded-lg px-4 min-h-[44px] text-sm transition-colors duration-150 hover:border-neutral-500"
-          >
-            {copied ? "Copied!" : "Export"}
-          </button>
-          <button
-            type="button"
             onClick={handleDelete}
-            className="border border-red-900 text-red-400 rounded-lg px-4 min-h-[44px] text-sm transition-colors duration-150 hover:border-red-700 hover:text-red-300 ml-auto"
+            className={[
+              "rounded-lg px-4 min-h-[44px] text-sm font-medium transition-colors duration-150 ml-auto",
+              deleteArmed
+                ? "bg-red-500/15 border border-red-500 text-red-300"
+                : "border border-red-900 text-red-400 hover:border-red-700 hover:text-red-300",
+            ].join(" ")}
           >
-            Delete
+            {deleteArmed ? "Tap again to delete" : "Delete"}
           </button>
         </div>
       )}
+
+      {/* ── Save bar — pinned so a long settings list never hides the exit ── */}
+      <div className="sticky bottom-0 z-10 -mx-4 border-t border-neutral-800 bg-neutral-950/95 px-4 py-3 backdrop-blur">
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={!name.trim()}
+            className="flex-1 bg-accent text-black rounded-lg px-5 min-h-[44px] font-semibold text-sm transition-[filter,opacity] duration-150 hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:brightness-100"
+          >
+            {isEditMode ? "Save changes" : "Create profile"}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="border border-neutral-700 rounded-lg px-5 min-h-[44px] text-sm font-medium transition-colors duration-150 hover:border-neutral-500"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
     </div>
   )
 }

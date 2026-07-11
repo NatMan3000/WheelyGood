@@ -1,9 +1,14 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { settingById } from "../data/settings"
+import { usePageTitle } from "../hooks/usePageTitle"
+import { settingById, recommendationsForContext, formatValue } from "../data/settings"
+import { useSetup } from "../hooks/useSetup"
+import { useGame } from "../hooks/useGame"
 import RangeIndicator from "../components/shared/RangeIndicator"
 import DirectionCard from "../components/shared/DirectionCard"
 import SettingChip from "../components/shared/SettingChip"
 import OledTag from "../components/shared/OledTag"
+import SetupLogo from "../components/shared/SetupLogo"
+import GameLogo from "../components/shared/GameLogo"
 import Icon from "../components/shared/Icon"
 import { highlightAcronyms } from "../utils/highlightAcronyms"
 
@@ -14,7 +19,10 @@ function accessLabel(access: "on-wheel-tuning" | "in-game"): string {
 export default function SettingDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { setupId, setup } = useSetup()
+  const { gameId, game } = useGame()
   const setting = id ? settingById(id) : undefined
+  usePageTitle(setting?.name)
 
   if (!setting) {
     return (
@@ -27,8 +35,16 @@ export default function SettingDetailPage() {
     )
   }
 
+  // Only meaningful when the setting exists on the active rig (or is an
+  // in-game setting for the active game) — otherwise showing "your rig"
+  // values for someone else's hardware is noise.
+  const inContext =
+    setting.hardware.some((h) => setup.components.some((c) => c.id === h)) ||
+    (setting.category === "in-game" && (setting.games?.includes(gameId) ?? false))
+  const recs = recommendationsForContext(setting, setupId, gameId)
+
   return (
-    <div className="min-h-svh text-white">
+    <div className="min-h-svh text-white tread-surface">
       {/* Minimal back control — no duplicated title; the hero below owns it. */}
       {/* box-content keeps the h-14 button row intact while pt adds the iOS
           status-bar safe area above it (these full-screen pages sit outside
@@ -67,6 +83,56 @@ export default function SettingDetailPage() {
 
         {/* Description */}
         <p className="text-neutral-300">{highlightAcronyms(setting.description)}</p>
+
+        {/* Your rig — the at-the-rig answer, front and centre */}
+        {inContext && (
+          <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-3.5">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-neutral-500">
+                Your rig
+              </p>
+              <span className="flex items-center gap-1.5">
+                <SetupLogo setupId={setupId} className="h-5 w-5" />
+                <GameLogo gameId={gameId} className="h-5 w-5" />
+                <span className="text-[11px] text-neutral-500">
+                  {setup.shortName} · {game.name}
+                </span>
+              </span>
+            </div>
+            {recs.length > 0 ? (
+              <div className="mt-2 space-y-2.5">
+                {recs.map((rec, i) => (
+                  <div key={i}>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-2xl font-bold text-accent tnum">
+                        {formatValue(setting, rec.value)}
+                      </span>
+                      {rec.surface && (
+                        <span className="rounded bg-neutral-800 text-neutral-300 px-2 py-0.5 text-xs capitalize">
+                          {rec.surface}
+                        </span>
+                      )}
+                    </div>
+                    {rec.notes && (
+                      <p className="text-sm text-neutral-400 mt-1">{highlightAcronyms(rec.notes)}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-2">
+                <span className="text-2xl font-bold text-neutral-200 tnum">
+                  {formatValue(setting, setting.valueType.default)}
+                </span>
+                <p className="text-sm text-neutral-500 mt-1">
+                  {setting.sweetSpot
+                    ? "No published value for this rig + game — start at the default and use the sweet spot below."
+                    : "No published value for this rig + game — start at the default."}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Full official detail (e.g. verbatim FH6 article text) */}
         {setting.details && (
