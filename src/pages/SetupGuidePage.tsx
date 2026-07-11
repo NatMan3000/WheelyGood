@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { usePageTitle } from "../hooks/usePageTitle"
 import { useLocalStorage } from "../hooks/useLocalStorage"
@@ -44,10 +43,6 @@ export default function SetupGuidePage() {
 
   const [pos, setPos] = useLocalStorage<number>(`wg-guide-pos-${setupId}-${gameId}`, -1)
   const clamped = Math.max(-1, Math.min(pos, total))
-
-  // "Full detail" expander — keyed by setting id so moving to another step
-  // collapses it automatically.
-  const [expandedStep, setExpandedStep] = useState<string | null>(null)
 
   function saveAsProfile() {
     const settings: Record<string, { value: SettingValue }> = {}
@@ -176,85 +171,64 @@ export default function SetupGuidePage() {
                   <p className="text-sm text-neutral-300">{highlightAcronyms(step.setting.sweetSpot)}</p>
                 </div>
               ) : null}
-              {/* Full detail — expands in place, no detour off the guide */}
+              {/* Full detail — always visible; the guide IS the reference */}
               {(() => {
                 const s = step.setting
-                const expanded = expandedStep === s.id
                 return (
                   <div className="space-y-3">
-                    <button
-                      type="button"
-                      onClick={() => setExpandedStep(expanded ? null : s.id)}
-                      aria-expanded={expanded}
-                      className="inline-flex items-center gap-1 text-xs text-neutral-500 hover:text-accent transition-colors duration-150"
-                    >
-                      Full detail
-                      <Icon
-                        name="chevron-down"
-                        className={[
-                          "h-3.5 w-3.5 transition-transform duration-150",
-                          expanded ? "rotate-180" : "",
-                        ].join(" ")}
-                      />
-                    </button>
+                    {/* Long-form official detail */}
+                    {s.details &&
+                      s.details.split("\n\n").map((para, i) => {
+                        const tip = para.startsWith("TIP:")
+                        return (
+                          <p key={i} className={tip ? "text-sm text-accent" : "text-sm text-neutral-400"}>
+                            {highlightAcronyms(para)}
+                          </p>
+                        )
+                      })}
 
-                    {expanded && (
-                      <div className="space-y-3 item-enter">
-                        {/* Long-form official detail */}
-                        {s.details &&
-                          s.details.split("\n\n").map((para, i) => {
-                            const tip = para.startsWith("TIP:")
-                            return (
-                              <p key={i} className={tip ? "text-sm text-accent" : "text-sm text-neutral-400"}>
-                                {highlightAcronyms(para)}
-                              </p>
-                            )
-                          })}
+                    {/* Direction cards */}
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <DirectionCard direction="up" text={s.increaseEffect} />
+                      <DirectionCard direction="down" text={s.decreaseEffect} />
+                    </div>
 
-                        {/* Direction cards */}
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          <DirectionCard direction="up" text={s.increaseEffect} />
-                          <DirectionCard direction="down" text={s.decreaseEffect} />
-                        </div>
-
-                        {/* Sweet spot — only if the rec note took its slot above */}
-                        {rec?.notes && s.sweetSpot && (
-                          <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-3">
-                            <p className="text-[11px] font-semibold uppercase tracking-wide text-neutral-500 mb-1">
-                              Sweet spot
-                            </p>
-                            <p className="text-sm text-neutral-300">{highlightAcronyms(s.sweetSpot)}</p>
-                          </div>
-                        )}
-
-                        {/* Interactions */}
-                        {s.interactsWith && s.interactsWith.length > 0 && (
-                          <div className="space-y-2">
-                            {s.interactsWith.map((interaction) => (
-                              <div key={interaction.settingId} className="flex flex-col gap-0.5">
-                                <SettingChip
-                                  id={interaction.settingId}
-                                  label={settingById(interaction.settingId)?.name ?? interaction.settingId}
-                                />
-                                <span className="text-xs text-neutral-500 pl-1">
-                                  {highlightAcronyms(interaction.relationship)}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                        {/* Warnings */}
-                        {s.warnings && s.warnings.length > 0 && (
-                          <ul className="space-y-1">
-                            {s.warnings.map((warning, i) => (
-                              <li key={i} className="text-sm text-amber-400">
-                                ⚠️ {highlightAcronyms(warning)}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
+                    {/* Sweet spot — only if the rec note took its slot above */}
+                    {rec?.notes && s.sweetSpot && (
+                      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-3">
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-neutral-500 mb-1">
+                          Sweet spot
+                        </p>
+                        <p className="text-sm text-neutral-300">{highlightAcronyms(s.sweetSpot)}</p>
                       </div>
+                    )}
+
+                    {/* Interactions */}
+                    {s.interactsWith && s.interactsWith.length > 0 && (
+                      <div className="space-y-2">
+                        {s.interactsWith.map((interaction) => (
+                          <div key={interaction.settingId} className="flex flex-col gap-0.5">
+                            <SettingChip
+                              id={interaction.settingId}
+                              label={settingById(interaction.settingId)?.name ?? interaction.settingId}
+                            />
+                            <span className="text-xs text-neutral-500 pl-1">
+                              {highlightAcronyms(interaction.relationship)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Warnings */}
+                    {s.warnings && s.warnings.length > 0 && (
+                      <ul className="space-y-1">
+                        {s.warnings.map((warning, i) => (
+                          <li key={i} className="text-sm text-amber-400">
+                            ⚠️ {highlightAcronyms(warning)}
+                          </li>
+                        ))}
+                      </ul>
                     )}
                   </div>
                 )
