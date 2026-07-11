@@ -95,7 +95,7 @@ Known lint debt (pre-existing): 3 `react-refresh/only-export-components` errors 
 
 ## v1.2 (2026-07-11) — Setup Guide + Troubleshooter upgrades
 
-- **Setup Guide** (`/guide`, full-screen outside the shell, `SetupGuidePage`): intro (active rig + how-to-open-the-tuning-menu) → one setting per step in wheel-menu order (big value via `contextValue`, rec notes or sweet spot, location path) → done screen with "Save as a profile" (recommended values). Position persists per rig+game (`wg-guide-pos-<setup>-<game>`). Entry points: accent CTA card on Simpedia (hidden mid-search) + Settings page section + PWA shortcut.
+- **Setup Guide** (`/guide`, full-screen outside the shell, `SetupGuidePage`): intro (inline ContextPicker to switch rig/game in place + how-to-open-the-tuning-menu) → one setting per step in wheel-menu order — big value via `contextValue`, rec notes/sweet spot, location path, AND the full detail always visible (direction cards, long-form details, interactions, warnings — Nathan ruled no expander, info-dense by default) → done screen with "Save as a profile" (recommended values). Position persists per rig+game (`wg-guide-pos-<setup>-<game>`). Entry points: accent CTA card on Simpedia (hidden mid-search) + Settings page section + PWA shortcut.
 - **Fix sessions:** symptom pages carry a persistent Helped/No-change verdict per fix (`wg-fixlog-<symptomId>`; tap same verdict to clear; "Clear session"). Fix rows show the starting value for your rig. `contextFixes()` in `symptoms.ts` is the shared rig-filter (detail page + card counts).
 - **Reverse lookup:** setting detail pages list "Fixes these symptoms" with direction arrows (`symptomsForSetting()`).
 - **Symptom cards** show "N fixes" for the active rig (replaces the area chip).
