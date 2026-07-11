@@ -112,7 +112,7 @@ export default function SettingsPage() {
       <section className="mb-8">
         <p className="text-xs uppercase tracking-wide text-neutral-500 mb-3">About</p>
         <div className="text-sm text-neutral-400 space-y-1">
-          <p>App version: <span className="text-neutral-300">1.1.0</span></p>
+          <p>App version: <span className="text-neutral-300">1.2.0</span></p>
           <p>Data: <span className="text-neutral-300">{dataVersion}</span></p>
           <p>Built by <span className="text-neutral-300">Nathan &amp; Josh</span></p>
         </div>
