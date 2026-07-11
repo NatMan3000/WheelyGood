@@ -1,6 +1,7 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { usePageTitle } from "../hooks/usePageTitle"
 import { settingById, recommendationsForContext, formatValue } from "../data/settings"
+import { symptomsForSetting } from "../data/symptoms/symptoms"
 import { useSetup } from "../hooks/useSetup"
 import { useGame } from "../hooks/useGame"
 import RangeIndicator from "../components/shared/RangeIndicator"
@@ -196,6 +197,31 @@ export default function SettingDetailPage() {
             ))}
           </ul>
         )}
+
+        {/* Reverse lookup — what this dial is a remedy for */}
+        {(() => {
+          const fixes = symptomsForSetting(setting.id)
+          if (fixes.length === 0) return null
+          return (
+            <div className="space-y-2">
+              <h2 className="text-sm font-medium text-neutral-300">Fixes these symptoms</h2>
+              <div className="flex flex-wrap gap-2">
+                {fixes.map(({ symptom, direction }) => (
+                  <Link
+                    key={symptom.id}
+                    to={`/symptom/${symptom.id}`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-neutral-700 px-3 py-1 text-sm text-neutral-200 hover:border-accent transition-colors duration-150"
+                  >
+                    <span className={direction === "increase" ? "text-emerald-400" : "text-red-400"}>
+                      {direction === "increase" ? "↑" : "↓"}
+                    </span>
+                    {symptom.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )
+        })()}
       </div>
     </div>
   )

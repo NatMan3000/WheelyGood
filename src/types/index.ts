@@ -143,6 +143,8 @@ export interface Setup {
   platform: Platform
   brand: Brand
   components: HardwareComponent[]
+  /** How to open + drive the on-wheel tuning menu (or where tuning lives instead). */
+  tuningMenuAccess?: string
 }
 
 // ── Theme ────────────────────────────────────────────────────────────

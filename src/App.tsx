@@ -10,6 +10,7 @@ import ProfileComparePage from './pages/ProfileComparePage'
 import SettingsPage from './pages/SettingsPage'
 import SettingDetailPage from './pages/SettingDetailPage'
 import SymptomDetailPage from './pages/SymptomDetailPage'
+import SetupGuidePage from './pages/SetupGuidePage'
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
       {/* Deep-linkable full-screen detail (outside the shell). */}
       <Route path="/setting/:id" element={<SettingDetailPage />} />
       <Route path="/symptom/:id" element={<SymptomDetailPage />} />
+      <Route path="/guide" element={<SetupGuidePage />} />
       <Route path="*" element={<Navigate to="/learn" replace />} />
     </Routes>
     </>

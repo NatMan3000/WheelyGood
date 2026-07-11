@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { usePageTitle } from "../hooks/usePageTitle"
 import { useSetup } from "../hooks/useSetup"
 import { useGame } from "../hooks/useGame"
@@ -74,6 +75,28 @@ export default function EncyclopediaPage() {
           />
         </div>
       </div>
+
+      {/* Setup Guide entry — only when not mid-search */}
+      {!q && (
+        <Link
+          to="/guide"
+          className="group mt-4 flex items-center gap-3 rounded-xl border border-accent/25 bg-accent/[0.05] p-3 hover:border-accent/60 card-hover"
+        >
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent text-black">
+            <Icon name="wheel" className="h-5 w-5" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-semibold text-white">Setup Guide</span>
+            <span className="block text-xs text-neutral-400">
+              Fresh wheel or new game? Walk through every setting, in order.
+            </span>
+          </span>
+          <Icon
+            name="chevron"
+            className="h-5 w-5 shrink-0 text-neutral-600 transition-[color,transform] duration-150 group-hover:text-accent group-hover:translate-x-0.5"
+          />
+        </Link>
+      )}
 
       <div className="mt-4">
         {baseSettings.length === 0 ? (

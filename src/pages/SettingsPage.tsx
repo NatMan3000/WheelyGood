@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { useSetup } from "../hooks/useSetup"
 import { usePageTitle } from "../hooks/usePageTitle"
 import { useGame } from "../hooks/useGame"
@@ -50,10 +51,32 @@ export default function SettingsPage() {
                     </li>
                   ))}
                 </ul>
+                {isSelected && s.tuningMenuAccess && (
+                  <div className="mt-3 rounded-lg bg-neutral-950/60 border border-neutral-800 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-neutral-500 mb-1">
+                      Opening the tuning menu
+                    </p>
+                    <p className="text-sm text-neutral-400">{s.tuningMenuAccess}</p>
+                  </div>
+                )}
               </button>
             )
           })}
         </div>
+      </section>
+
+      {/* ── Setup Guide ── */}
+      <section className="mb-8">
+        <p className="text-xs uppercase tracking-wide text-neutral-500 mb-3">Setup Guide</p>
+        <Link
+          to="/guide"
+          className="block rounded-lg bg-neutral-900 border border-neutral-800 p-4 min-h-[44px] hover:border-accent card-hover"
+        >
+          <span className="font-medium text-white">Walk through every setting</span>
+          <p className="text-sm text-neutral-400 mt-0.5">
+            Step-by-step for the active rig + game, with recommended values.
+          </p>
+        </Link>
       </section>
 
       {/* ── Active Game ── */}

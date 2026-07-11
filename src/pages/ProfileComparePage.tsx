@@ -1,16 +1,20 @@
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useProfiles } from "../hooks/useProfiles"
-import { settingById, groupByCategory, games } from "../data/settings"
+import { useSetup } from "../hooks/useSetup"
+import {
+  settingById,
+  groupByCategory,
+  games,
+  settingsForContext,
+  recommendedValue,
+} from "../data/settings"
 import { setupById } from "../data/setups"
-import type { Setting } from "../types"
+import type { Profile, Setting } from "../types"
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-function profileLabel(
-  profileId: string,
-  profiles: ReturnType<typeof useProfiles>["profiles"],
-): string {
+function profileLabel(profileId: string, profiles: Profile[]): string {
   const p = profiles.find((x) => x.id === profileId)
   if (!p) return "—"
   const setup = setupById(p.setup)
@@ -22,13 +26,46 @@ function profileLabel(
 
 export default function ProfileComparePage() {
   const { profiles } = useProfiles()
+  const { setupId, setup } = useSetup()
 
   const [aId, setAId] = useState<string>(() => profiles[0]?.id ?? "")
   const [bId, setBId] = useState<string>(() => profiles[1]?.id ?? "")
   const [diffOnly, setDiffOnly] = useState(false)
 
-  const profileA = profiles.find((p) => p.id === aId)
-  const profileB = profiles.find((p) => p.id === bId)
+  // Synthetic "recommended" profiles for the active rig — lets a saved
+  // profile answer "what have I actually changed from stock?" without
+  // needing a second real profile.
+  const recommendedProfiles: Profile[] = games.map((g) => ({
+    id: `rec-${setupId}-${g.id}`,
+    name: `★ Recommended`,
+    setup: setupId,
+    game: g.id,
+    createdAt: "",
+    updatedAt: "",
+    settings: Object.fromEntries(
+      settingsForContext(setupId, g.id).map((s) => [
+        s.id,
+        { value: recommendedValue(s, { game: g.id, setup: setupId }) },
+      ]),
+    ),
+  }))
+
+  const allProfiles = [...profiles, ...recommendedProfiles]
+
+  // Fall back gracefully when a stored selection vanishes (deleted profile,
+  // setup switch changing synthetic ids) — and default B to "recommended"
+  // when there's only one real profile.
+  const aSel = allProfiles.some((p) => p.id === aId) ? aId : profiles[0]?.id ?? ""
+  const aGame = allProfiles.find((p) => p.id === aSel)?.game
+  const bSel = allProfiles.some((p) => p.id === bId)
+    ? bId
+    : profiles[1]?.id ??
+      recommendedProfiles.find((r) => r.game === aGame)?.id ??
+      recommendedProfiles[0]?.id ??
+      ""
+
+  const profileA = allProfiles.find((p) => p.id === aSel)
+  const profileB = allProfiles.find((p) => p.id === bSel)
 
   // ── Compute diff ────────────────────────────────────────────────────────
 
@@ -39,7 +76,10 @@ export default function ProfileComparePage() {
     differs: boolean
   }
 
-  const { grouped, diffCount } = useMemo(() => {
+  // Plain computation — no memo. The synthetic recommended profiles are
+  // rebuilt every render (new identities), so memoizing on them buys nothing,
+  // and the diff over ~40 settings is trivial.
+  const { grouped, diffCount } = (() => {
     if (!profileA || !profileB) return { grouped: [], diffCount: 0 }
 
     // Union of all setting ids from both profiles
@@ -76,18 +116,22 @@ export default function ProfileComparePage() {
     }))
 
     return { grouped: groupedRows, diffCount: diffs }
-  }, [profileA, profileB])
+  })()
 
   const selectClass =
     "rounded-lg bg-neutral-900 border border-neutral-800 px-3 py-2 min-h-[44px] focus:border-accent outline-none text-white text-sm transition-colors duration-150 w-full"
 
-  // ── Guard: need at least 2 profiles (after hooks, per rules-of-hooks) ────
+  // ── Guard: need at least 1 saved profile (after hooks, per rules-of-hooks).
+  // One is enough — the synthetic ★ Recommended profiles cover side B.
 
-  if (profiles.length < 2) {
+  if (profiles.length < 1) {
     return (
       <div className="py-16 text-center">
-        <p className="text-lg font-medium">Need at least two profiles to compare.</p>
-        <p className="text-neutral-400 text-sm mt-1">Create a second profile first.</p>
+        <p className="text-lg font-medium">Nothing to compare yet.</p>
+        <p className="text-neutral-400 text-sm mt-1">
+          Save a profile first — then compare it against another, or against the
+          recommended values for your rig.
+        </p>
         <Link
           to="/saves/new"
           className="bg-accent text-black rounded-lg px-4 min-h-[44px] inline-flex items-center font-medium text-sm mt-4 mx-auto transition-colors duration-150"
@@ -121,40 +165,54 @@ export default function ProfileComparePage() {
         <div>
           <p className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Profile A</p>
           <select
-            value={aId}
+            value={aSel}
             onChange={(e) => setAId(e.target.value)}
             className={selectClass}
           >
             {profiles.map((p) => (
               <option key={p.id} value={p.id}>
-                {profileLabel(p.id, profiles)}
+                {profileLabel(p.id, allProfiles)}
               </option>
             ))}
+            <optgroup label={`Recommended — ${setup.shortName}`}>
+              {recommendedProfiles.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {profileLabel(p.id, allProfiles)}
+                </option>
+              ))}
+            </optgroup>
           </select>
         </div>
         <div>
           <p className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Profile B</p>
           <select
-            value={bId}
+            value={bSel}
             onChange={(e) => setBId(e.target.value)}
             className={selectClass}
           >
             {profiles.map((p) => (
               <option key={p.id} value={p.id}>
-                {profileLabel(p.id, profiles)}
+                {profileLabel(p.id, allProfiles)}
               </option>
             ))}
+            <optgroup label={`Recommended — ${setup.shortName}`}>
+              {recommendedProfiles.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {profileLabel(p.id, allProfiles)}
+                </option>
+              ))}
+            </optgroup>
           </select>
         </div>
       </div>
 
       {/* Same profile selected */}
-      {aId === bId && (
+      {aSel === bSel && (
         <p className="text-amber-400 text-sm mb-4">Select two different profiles to compare.</p>
       )}
 
       {/* Diff summary */}
-      {profileA && profileB && aId !== bId && (
+      {profileA && profileB && aSel !== bSel && (
         <>
           <div className="flex items-center justify-between gap-2 mb-4">
             <p className="text-sm text-neutral-400">

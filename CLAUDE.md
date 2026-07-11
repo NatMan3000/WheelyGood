@@ -93,6 +93,16 @@ Design/UX context now lives in `PRODUCT.md` + `DESIGN.md` (impeccable-skill form
 
 Known lint debt (pre-existing): 3 `react-refresh/only-export-components` errors in `useGame`/`useProfiles`/`useSetup` (provider + hook share a file). Cosmetic; `bun run lint` fails on them.
 
+## v1.2 (2026-07-11) — Setup Guide + Troubleshooter upgrades
+
+- **Setup Guide** (`/guide`, full-screen outside the shell, `SetupGuidePage`): intro (active rig + how-to-open-the-tuning-menu) → one setting per step in wheel-menu order (big value via `contextValue`, rec notes or sweet spot, location path) → done screen with "Save as a profile" (recommended values). Position persists per rig+game (`wg-guide-pos-<setup>-<game>`). Entry points: accent CTA card on Simpedia (hidden mid-search) + Settings page section + PWA shortcut.
+- **Fix sessions:** symptom pages carry a persistent Helped/No-change verdict per fix (`wg-fixlog-<symptomId>`; tap same verdict to clear; "Clear session"). Fix rows show the starting value for your rig. `contextFixes()` in `symptoms.ts` is the shared rig-filter (detail page + card counts).
+- **Reverse lookup:** setting detail pages list "Fixes these symptoms" with direction arrows (`symptomsForSetting()`).
+- **Symptom cards** show "N fixes" for the active rig (replaces the area chip).
+- **Tuning-menu access** (`Setup.tuningMenuAccess`, verified vs Fanatec FAQ/quick guides 2026-07-11): shown on the selected Settings-page setup card + guide intro. FunkySwitch nav, hold-3s Standard↔Advanced; G920 = no on-wheel menu.
+- **Compare vs stock:** Compare injects synthetic "★ Recommended (setup · game)" profiles for the active rig; guard relaxed to ≥1 real profile; B defaults to the rec matching A's game.
+- **PWA shortcuts** (long-press app icon): Troubleshooter / Setup Guide / Saves.
+
 ## Deployment
 
 | Item | Value |

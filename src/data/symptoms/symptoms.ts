@@ -1,4 +1,4 @@
-import type { CarArea, Symptom } from "../../types"
+import type { CarArea, GameId, HardwareId, Symptom, SymptomFix } from "../../types"
 
 // ── Troubleshooter symptom library ──────────────────────────────────────
 // Each symptom maps a driver experience to ordered fix steps using REAL
@@ -1138,4 +1138,34 @@ export function symptomById(id: string): Symptom | undefined {
 
 export function symptomsByArea(area: CarArea): Symptom[] {
   return symptoms.filter((s) => s.area === area)
+}
+
+/**
+ * The fixes of a symptom that apply to a given hardware set + game:
+ * a fix matches if its hardware overlaps (or it names none) AND its game
+ * matches (or it names none). Shared by the symptom detail page and the
+ * per-card "fixes for your rig" count so they never disagree.
+ */
+export function contextFixes(
+  symptom: Symptom,
+  hardware: ReadonlySet<HardwareId>,
+  gameId: GameId,
+): SymptomFix[] {
+  return symptom.fixes.filter(
+    (f) =>
+      (!f.hardware || f.hardware.some((h) => hardware.has(h))) &&
+      (!f.game || f.game.includes(gameId)),
+  )
+}
+
+/** Reverse lookup: symptoms that list this setting in their fixes (with direction). */
+export function symptomsForSetting(
+  settingId: string,
+): { symptom: Symptom; direction: "increase" | "decrease" }[] {
+  const out: { symptom: Symptom; direction: "increase" | "decrease" }[] = []
+  for (const symptom of symptoms) {
+    const fix = symptom.fixes.find((f) => f.settingId === settingId)
+    if (fix) out.push({ symptom, direction: fix.direction })
+  }
+  return out
 }

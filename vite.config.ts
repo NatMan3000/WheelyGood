@@ -29,6 +29,27 @@ export default defineConfig({
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
+        // Long-press the installed app icon → jump straight into a flow.
+        shortcuts: [
+          {
+            name: 'Troubleshooter',
+            short_name: 'Fix',
+            url: '/WheelyGood/fix',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' }],
+          },
+          {
+            name: 'Setup Guide',
+            short_name: 'Guide',
+            url: '/WheelyGood/guide',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' }],
+          },
+          {
+            name: 'Saves',
+            short_name: 'Saves',
+            url: '/WheelyGood/saves',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' }],
+          },
+        ],
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,jpg,jpeg,woff2}'],
